@@ -578,6 +578,12 @@ document.addEventListener('DOMContentLoaded', () => {
   buildTimeline();
   buildMapFilters();
   buildThemes();
+
+  // Deep link: atlas.html#map, atlas.html#characters, etc.
+  const hash = location.hash.replace('#', '');
+  if (hash && document.getElementById('view-' + hash)) {
+    switchView(hash);
+  }
 });
 </script>
 
