@@ -1,0 +1,550 @@
+/* atlas.css — The Atlas: Lullaby Interactive Explorer */
+
+:root {
+  --bg: #1a1a1f;
+  --surface: #222228;
+  --surface-hover: #2a2a32;
+  --border: #333340;
+  --text: #d4d4d8;
+  --text-muted: #8888a0;
+  --accent: #a78bfa;
+  --accent-dim: #7c5cbf;
+  --green: #6ee7a0;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --blue: #60a5fa;
+  --cyan: #22d3ee;
+  --pink: #f472b6;
+  --nav-height: 60px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Password Gate ── */
+#gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+#gate h1 {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+#gate input {
+  display: block;
+  width: 240px;
+  margin: 0 auto 12px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+#gate input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#gate button {
+  display: block;
+  width: 240px;
+  margin: 0 auto;
+  padding: 10px;
+  background: var(--accent-dim);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#gate button:hover { background: var(--accent); }
+
+#pw-error {
+  display: none;
+  color: var(--red);
+  font-size: 0.8rem;
+  margin-top: 10px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* ── Main Layout ── */
+#content { display: none; }
+
+.atlas-app {
+  padding-bottom: calc(var(--nav-height) + 16px);
+}
+
+/* ── Header ── */
+.atlas-header {
+  text-align: center;
+  padding: 24px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.atlas-header h1 {
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.atlas-header .subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* ── Bottom Nav ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px 10px;
+  transition: color 0.15s;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.nav-btn svg { width: 22px; height: 22px; stroke-width: 1.5; }
+.nav-btn.active { color: var(--accent); }
+.nav-btn:hover { color: var(--text); }
+
+/* ── View Panels ── */
+.view-panel {
+  display: none;
+  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.view-panel.active { display: block; }
+
+/* Map panel needs full width */
+.view-panel.map-panel {
+  max-width: 100%;
+  padding: 0;
+}
+
+.view-panel.map-panel.active { display: flex; flex-direction: column; }
+
+/* ── Section Headers ── */
+.section-title {
+  font-size: 0.7rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 16px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.card:hover {
+  border-color: var(--accent-dim);
+  background: var(--surface-hover);
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.card-meta {
+  font-size: 0.7rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.card-summary {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── Character Badge ── */
+.char-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+
+/* ── Detail Panel (slide-in overlay) ── */
+.detail-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: var(--nav-height);
+  background: var(--bg);
+  z-index: 50;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.detail-overlay.active { display: block; }
+
+.detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+.detail-back:hover { color: var(--text); }
+
+.detail-title {
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.detail-subtitle {
+  font-size: 0.75rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.detail-section {
+  margin-bottom: 20px;
+}
+
+.detail-section h3 {
+  font-size: 0.7rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.detail-section p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.detail-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.detail-link {
+  font-size: 0.7rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.detail-link:hover { border-color: var(--accent); }
+
+/* ── Timeline ── */
+.timeline-line {
+  position: relative;
+  padding-left: 24px;
+}
+
+.timeline-line::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+
+.timeline-event {
+  position: relative;
+  padding: 10px 0 10px 16px;
+  cursor: pointer;
+}
+
+.timeline-event::before {
+  content: '';
+  position: absolute;
+  left: -21px;
+  top: 18px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+.timeline-year {
+  font-size: 0.7rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.timeline-desc {
+  font-size: 0.9rem;
+  margin: 2px 0;
+}
+
+.timeline-detail {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.timeline-chars {
+  margin-top: 4px;
+}
+
+/* ── Map ── */
+#map-container {
+  flex: 1;
+  min-height: calc(100vh - var(--nav-height) - 80px);
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.map-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.map-filter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.map-filter input { accent-color: var(--accent); }
+
+/* Map info window styling */
+.gm-style .gm-style-iw-c {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+}
+
+.gm-style .gm-style-iw-d {
+  overflow: auto !important;
+}
+
+.gm-style .gm-style-iw-tc::after {
+  background: var(--surface) !important;
+}
+
+.info-window {
+  padding: 12px 16px;
+  max-width: 280px;
+  font-family: Georgia, serif;
+}
+
+.info-window h3 {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.info-window .info-region {
+  font-size: 0.65rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.info-window p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.info-window .info-chars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── Themes ── */
+.theme-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 16px;
+  margin-bottom: 12px;
+}
+
+.theme-question {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.theme-detail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.theme-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* ── Part Headers ── */
+.part-header {
+  font-size: 0.8rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 20px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.part-header:first-child { padding-top: 8px; }
+
+/* ── Responsive ── */
+@media (min-width: 768px) {
+  .atlas-header { padding: 32px 16px 20px; }
+  .atlas-header h1 { font-size: 1.6rem; }
+  .view-panel { padding: 20px 24px; }
+  .card { padding: 16px 20px; }
+
+  .bottom-nav {
+    top: 0;
+    bottom: auto;
+    height: 48px;
+    border-top: none;
+    border-bottom: 1px solid var(--border);
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .nav-btn {
+    flex-direction: row;
+    gap: 6px;
+    font-size: 0.7rem;
+  }
+
+  .nav-btn svg { width: 18px; height: 18px; }
+
+  .atlas-app {
+    padding-top: 48px;
+    padding-bottom: 0;
+  }
+
+  .detail-overlay {
+    bottom: 0;
+    top: 48px;
+  }
+
+  #map-container {
+    min-height: calc(100vh - 48px - 50px);
+  }
+}

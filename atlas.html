@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>The Atlas — Lullaby</title>
+  <link rel="stylesheet" href="atlas.css">
+</head>
+<body>
+
+<!-- Password Gate -->
+<div id="gate">
+  <div style="text-align:center;">
+    <h1>The Atlas</h1>
+    <p style="color:#8888a0;font-size:0.8rem;margin-bottom:20px;font-family:'SF Mono',monospace;">Lullaby Interactive Explorer</p>
+    <input id="pw" type="password" placeholder="password" autocomplete="off">
+    <button onclick="tryAuth()">Enter</button>
+    <div id="pw-error">Incorrect password</div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div id="content">
+  <div class="atlas-app">
+
+    <!-- Header -->
+    <div class="atlas-header">
+      <h1>The Atlas</h1>
+      <div class="subtitle">Lullaby — Interactive Explorer</div>
+    </div>
+
+    <!-- View Panels -->
+
+    <!-- CHAPTERS VIEW -->
+    <div id="view-chapters" class="view-panel active">
+      <div id="chapters-list"></div>
+    </div>
+
+    <!-- CHARACTERS VIEW -->
+    <div id="view-characters" class="view-panel">
+      <div id="characters-list"></div>
+    </div>
+
+    <!-- TIMELINE VIEW -->
+    <div id="view-timeline" class="view-panel">
+      <div class="section-title">Novel Timeline</div>
+      <div id="timeline-list" class="timeline-line"></div>
+    </div>
+
+    <!-- MAP VIEW -->
+    <div id="view-map" class="view-panel map-panel">
+      <div class="map-filters" id="map-filters"></div>
+      <div id="map-container">
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <!-- THEMES VIEW -->
+    <div id="view-themes" class="view-panel">
+      <div class="section-title">Questions the Novel Raises</div>
+      <div id="themes-list"></div>
+    </div>
+
+    <!-- Detail Overlay -->
+    <div id="detail-overlay" class="detail-overlay">
+      <button class="detail-back" onclick="closeDetail()">← Back</button>
+      <div id="detail-content"></div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="chapters" onclick="switchView('chapters')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      <span>Chapters</span>
+    </button>
+    <button class="nav-btn" data-view="characters" onclick="switchView('characters')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      <span>Characters</span>
+    </button>
+    <button class="nav-btn" data-view="timeline" onclick="switchView('timeline')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Timeline</span>
+    </button>
+    <button class="nav-btn" data-view="map" onclick="switchView('map')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span>Map</span>
+    </button>
+    <button class="nav-btn" data-view="themes" onclick="switchView('themes')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>Themes</span>
+    </button>
+  </nav>
+</div>
+
+<!-- Data -->
+<script src="world-data.js"></script>
+
+<!-- Auth -->
+<script src="auth.js"></script>
+
+<!-- Google Maps -->
+<script>
+let map, markers = [], infoWindow;
+let mapInitialized = false;
+
+function initMap() {
+  if (mapInitialized) return;
+  mapInitialized = true;
+
+  const darkStyle = [
+    { elementType: 'geometry', stylers: [{ color: '#1a1a1f' }] },
+    { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a1f' }] },
+    { elementType: 'labels.text.fill', stylers: [{ color: '#8888a0' }] },
+    { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#333340' }] },
+    { featureType: 'administrative.land_parcel', elementType: 'labels.text.fill', stylers: [{ color: '#666680' }] },
+    { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#222228' }] },
+    { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#666680' }] },
+    { featureType: 'poi.park', elementType: 'geometry.fill', stylers: [{ color: '#1e2d1e' }] },
+    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a2a32' }] },
+    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#1a1a1f' }] },
+    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#333340' }] },
+    { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#222228' }] },
+    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#17171d' }] },
+    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#4a4a60' }] }
+  ];
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 25, lng: 30 },
+    zoom: 2,
+    styles: darkStyle,
+    backgroundColor: '#1a1a1f',
+    disableDefaultUI: true,
+    zoomControl: true,
+    gestureHandling: 'greedy'
+  });
+
+  infoWindow = new google.maps.InfoWindow();
+
+  createMarkers();
+}
+
+function getCharColor(charId) {
+  const c = CHARACTERS.find(ch => ch.id === charId);
+  return c ? c.color : '#a78bfa';
+}
+
+function createMarkers() {
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+
+  const activeFilters = getActiveFilters();
+
+  LOCATIONS.forEach(loc => {
+    // Filter: show if location has no characters (global event) or has at least one active character
+    const show = loc.characters.length === 0 || loc.characters.some(c => activeFilters.includes(c));
+    if (!show) return;
+
+    const color = loc.characters.length > 0 ? getCharColor(loc.characters[0]) : '#a78bfa';
+
+    const marker = new google.maps.Marker({
+      position: { lat: loc.lat, lng: loc.lng },
+      map: map,
+      title: loc.name,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: color,
+        fillOpacity: 0.9,
+        strokeColor: '#1a1a1f',
+        strokeWeight: 2,
+        scale: 7
+      }
+    });
+
+    marker.addListener('click', () => {
+      const charBadges = loc.characters.map(cid => {
+        const ch = CHARACTERS.find(c => c.id === cid);
+        if (!ch) return '';
+        return `<span class="char-badge" style="color:${ch.color};border-color:${ch.color}30;background:${ch.color}15;">${ch.name.split('(')[0].split(' ')[0]}</span>`;
+      }).join('');
+
+      infoWindow.setContent(`
+        <div class="info-window">
+          <h3>${loc.name}</h3>
+          <div class="info-region">${loc.region}</div>
+          <p>${loc.detail}</p>
+          ${charBadges ? `<div class="info-chars">${charBadges}</div>` : ''}
+        </div>
+      `);
+      infoWindow.open(map, marker);
+    });
+
+    markers.push(marker);
+  });
+}
+
+function getActiveFilters() {
+  const checks = document.querySelectorAll('#map-filters input[type=checkbox]');
+  const active = [];
+  checks.forEach(cb => { if (cb.checked) active.push(cb.value); });
+  return active;
+}
+
+// ── App Logic ──
+
+function switchView(viewId) {
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + viewId).classList.add('active');
+  document.querySelector(`[data-view="${viewId}"]`).classList.add('active');
+  closeDetail();
+
+  if (viewId === 'map' && !mapInitialized) {
+    initMap();
+  }
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('active');
+}
+
+function showDetail(html) {
+  document.getElementById('detail-content').innerHTML = html;
+  document.getElementById('detail-overlay').classList.add('active');
+  document.getElementById('detail-overlay').scrollTop = 0;
+}
+
+function charBadge(charId, clickable) {
+  const ch = CHARACTERS.find(c => c.id === charId);
+  if (!ch) return '';
+  const name = ch.name.split('(')[0].trim().split(' ')[0];
+  const click = clickable ? ` onclick="showCharDetail('${charId}')" style="cursor:pointer;"` : '';
+  return `<span class="char-badge"${click} style="color:${ch.color};border-color:${ch.color}30;background:${ch.color}15;">${name}</span>`;
+}
+
+// ── Build Views ──
+
+function buildChapters() {
+  let html = '';
+  PARTS.forEach(part => {
+    html += `<div class="part-header">${part.name}</div>`;
+    part.chapters.forEach(chNum => {
+      const ch = CHAPTERS.find(c => c.id === chNum);
+      if (!ch) return;
+      const charObj = CHARACTERS.find(c => c.id === ch.pov);
+      const charColor = charObj ? charObj.color : '#a78bfa';
+      const charName = charObj ? charObj.name.split('(')[0].trim().split(' ')[0] : ch.pov;
+      html += `
+        <div class="card" onclick="showChapterDetail(${ch.id})">
+          <div class="card-title" style="display:flex;align-items:center;gap:10px;">
+            <span style="color:${charColor};font-family:'SF Mono',monospace;font-size:0.75rem;">${ch.id}</span>
+            ${ch.title}
+          </div>
+          <div class="card-meta">${charBadge(ch.pov, false)}</div>
+          <div class="card-summary">${ch.summary}</div>
+        </div>
+      `;
+    });
+  });
+  document.getElementById('chapters-list').innerHTML = html;
+}
+
+function buildCharacters() {
+  let html = '<div class="section-title">Point-of-View Characters</div>';
+  CHARACTERS.forEach(ch => {
+    html += `
+      <div class="card" onclick="showCharDetail('${ch.id}')">
+        <div class="card-title" style="display:flex;align-items:center;gap:10px;">
+          <span style="color:${ch.color};font-size:1.2rem;">●</span>
+          ${ch.name}
+        </div>
+        <div class="card-meta">${ch.role} · ${ch.location}</div>
+        <div class="card-summary">${ch.bio.substring(0, 120)}…</div>
+      </div>
+    `;
+  });
+  document.getElementById('characters-list').innerHTML = html;
+}
+
+function buildTimeline() {
+  let html = '';
+  TIMELINE.forEach(ev => {
+    const badges = ev.characters.map(c => charBadge(c, true)).join(' ');
+    html += `
+      <div class="timeline-event" onclick="showTimelineDetail(${TIMELINE.indexOf(ev)})">
+        <div class="timeline-year">${ev.year}</div>
+        <div class="timeline-desc">${ev.event}</div>
+        <div class="timeline-detail">${ev.detail.substring(0, 100)}${ev.detail.length > 100 ? '…' : ''}</div>
+        <div class="timeline-chars">${badges}</div>
+      </div>
+    `;
+  });
+  document.getElementById('timeline-list').innerHTML = html;
+}
+
+function buildMapFilters() {
+  let html = '';
+  CHARACTERS.forEach(ch => {
+    const name = ch.name.split('(')[0].trim().split(' ')[0];
+    html += `
+      <label class="map-filter">
+        <input type="checkbox" value="${ch.id}" checked onchange="createMarkers()">
+        <span style="color:${ch.color};">●</span> ${name}
+      </label>
+    `;
+  });
+  document.getElementById('map-filters').innerHTML = html;
+}
+
+function buildThemes() {
+  let html = '';
+  THEMES.forEach(theme => {
+    const charBadges = theme.characters.map(c => charBadge(c, true)).join(' ');
+    const chLinks = theme.chapters.map(chId => {
+      return `<span class="detail-link" onclick="event.stopPropagation(); showChapterDetail(${chId})">Ch ${chId}</span>`;
+    }).join('');
+
+    html += `
+      <div class="theme-card">
+        <div class="theme-question">${theme.question}</div>
+        <div class="theme-detail">${theme.detail}</div>
+        <div class="theme-links" style="margin-bottom:6px;">${charBadges}</div>
+        <div class="theme-links">${chLinks}</div>
+      </div>
+    `;
+  });
+  document.getElementById('themes-list').innerHTML = html;
+}
+
+// ── Detail Views ──
+
+function showChapterDetail(chId) {
+  const ch = CHAPTERS.find(c => c.id === chId);
+  if (!ch) return;
+  const charObj = CHARACTERS.find(c => c.id === ch.pov);
+  const partObj = PARTS.find(p => p.id === ch.part);
+
+  const locLinks = ch.locations.map(locId => {
+    const loc = LOCATIONS.find(l => l.id === locId);
+    if (!loc) return '';
+    return `<span class="detail-link" onclick="showLocationDetail('${locId}')">${loc.name}</span>`;
+  }).join('');
+
+  const html = `
+    <div class="detail-title">Chapter ${ch.id}</div>
+    <div class="detail-subtitle">${partObj ? partObj.name : ''} · ${charBadge(ch.pov, true)}</div>
+
+    <div class="detail-section">
+      <h3>Synopsis</h3>
+      <p>${ch.summary}</p>
+    </div>
+
+    ${charObj ? `
+    <div class="detail-section">
+      <h3>Point of View</h3>
+      <p style="cursor:pointer;" onclick="showCharDetail('${charObj.id}')">
+        <span style="color:${charObj.color};">●</span> ${charObj.name} — ${charObj.role}
+      </p>
+    </div>
+    ` : ''}
+
+    ${locLinks ? `
+    <div class="detail-section">
+      <h3>Locations</h3>
+      <div class="detail-links">${locLinks}</div>
+    </div>
+    ` : ''}
+
+    <div class="detail-section">
+      <h3>Navigate</h3>
+      <div class="detail-links">
+        ${ch.id > 1 ? `<span class="detail-link" onclick="showChapterDetail(${ch.id - 1})">← Ch ${ch.id - 1}</span>` : ''}
+        ${ch.id < 32 ? `<span class="detail-link" onclick="showChapterDetail(${ch.id + 1})">Ch ${ch.id + 1} →</span>` : ''}
+      </div>
+    </div>
+  `;
+  showDetail(html);
+}
+
+function showCharDetail(charId) {
+  const ch = CHARACTERS.find(c => c.id === charId);
+  if (!ch) return;
+
+  const chLinks = ch.chapters.map(chId => {
+    return `<span class="detail-link" onclick="showChapterDetail(${chId})">Ch ${chId}</span>`;
+  }).join('');
+
+  const locLinks = LOCATIONS.filter(l => l.characters.includes(charId)).map(loc => {
+    return `<span class="detail-link" onclick="showLocationDetail('${loc.id}')">${loc.name}</span>`;
+  }).join('');
+
+  const themeLinks = THEMES.filter(t => t.characters.includes(charId)).map(t => {
+    return `<span class="detail-link" onclick="showThemeDetail('${t.id}')">${t.question.substring(0, 40)}…</span>`;
+  }).join('');
+
+  const html = `
+    <div class="detail-title" style="display:flex;align-items:center;gap:10px;">
+      <span style="color:${ch.color};font-size:1.4rem;">●</span>
+      ${ch.name}
+    </div>
+    <div class="detail-subtitle">${ch.role} · ${ch.location}</div>
+
+    <div class="detail-section">
+      <h3>Biography</h3>
+      <p>${ch.bio}</p>
+    </div>
+
+    <div class="detail-section">
+      <h3>Chapters</h3>
+      <div class="detail-links">${chLinks}</div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Relationships</h3>
+      <p>${ch.relationships.map(r => `<span style="display:block;margin-bottom:4px;font-size:0.85rem;">· ${r}</span>`).join('')}</p>
+    </div>
+
+    ${locLinks ? `
+    <div class="detail-section">
+      <h3>Locations</h3>
+      <div class="detail-links">${locLinks}</div>
+    </div>
+    ` : ''}
+
+    ${themeLinks ? `
+    <div class="detail-section">
+      <h3>Themes</h3>
+      <div class="detail-links">${themeLinks}</div>
+    </div>
+    ` : ''}
+  `;
+  showDetail(html);
+}
+
+function showLocationDetail(locId) {
+  const loc = LOCATIONS.find(l => l.id === locId);
+  if (!loc) return;
+
+  const charBadges = loc.characters.map(c => charBadge(c, true)).join(' ');
+
+  const chaptersHere = CHAPTERS.filter(ch => ch.locations.includes(locId));
+  const chLinks = chaptersHere.map(ch => {
+    return `<span class="detail-link" onclick="showChapterDetail(${ch.id})">Ch ${ch.id}</span>`;
+  }).join('');
+
+  const html = `
+    <div class="detail-title">${loc.name}</div>
+    <div class="detail-subtitle">${loc.region} · ${loc.lat.toFixed(2)}°, ${loc.lng.toFixed(2)}°</div>
+
+    <div class="detail-section">
+      <h3>Description</h3>
+      <p>${loc.detail}</p>
+    </div>
+
+    ${charBadges ? `
+    <div class="detail-section">
+      <h3>Characters</h3>
+      <div class="detail-links">${charBadges}</div>
+    </div>
+    ` : ''}
+
+    ${chLinks ? `
+    <div class="detail-section">
+      <h3>Chapters</h3>
+      <div class="detail-links">${chLinks}</div>
+    </div>
+    ` : ''}
+
+    <div class="detail-section">
+      <h3>View on Map</h3>
+      <div class="detail-links">
+        <span class="detail-link" onclick="goToMapLocation('${locId}')">Show on map →</span>
+      </div>
+    </div>
+  `;
+  showDetail(html);
+}
+
+function showThemeDetail(themeId) {
+  const theme = THEMES.find(t => t.id === themeId);
+  if (!theme) return;
+
+  const charBadges = theme.characters.map(c => charBadge(c, true)).join(' ');
+  const chLinks = theme.chapters.map(chId => {
+    return `<span class="detail-link" onclick="showChapterDetail(${chId})">Ch ${chId}</span>`;
+  }).join('');
+
+  const html = `
+    <div class="detail-title" style="font-style:italic;">${theme.question}</div>
+    <div class="detail-subtitle">Theme</div>
+
+    <div class="detail-section">
+      <p>${theme.detail}</p>
+    </div>
+
+    <div class="detail-section">
+      <h3>Characters</h3>
+      <div class="detail-links">${charBadges}</div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Chapters</h3>
+      <div class="detail-links">${chLinks}</div>
+    </div>
+  `;
+  showDetail(html);
+}
+
+function showTimelineDetail(idx) {
+  const ev = TIMELINE[idx];
+  if (!ev) return;
+
+  const charBadges = ev.characters.map(c => charBadge(c, true)).join(' ');
+  const locLinks = ev.locations.map(locId => {
+    const loc = LOCATIONS.find(l => l.id === locId);
+    if (!loc) return '';
+    return `<span class="detail-link" onclick="showLocationDetail('${locId}')">${loc.name}</span>`;
+  }).join('');
+
+  const html = `
+    <div class="detail-title">${ev.event}</div>
+    <div class="detail-subtitle">${ev.year}</div>
+
+    <div class="detail-section">
+      <p>${ev.detail}</p>
+    </div>
+
+    ${charBadges ? `
+    <div class="detail-section">
+      <h3>Characters</h3>
+      <div class="detail-links">${charBadges}</div>
+    </div>
+    ` : ''}
+
+    ${locLinks ? `
+    <div class="detail-section">
+      <h3>Locations</h3>
+      <div class="detail-links">${locLinks}</div>
+    </div>
+    ` : ''}
+
+    <div class="detail-section">
+      <h3>Navigate</h3>
+      <div class="detail-links">
+        ${idx > 0 ? `<span class="detail-link" onclick="showTimelineDetail(${idx - 1})">← Earlier</span>` : ''}
+        ${idx < TIMELINE.length - 1 ? `<span class="detail-link" onclick="showTimelineDetail(${idx + 1})">Later →</span>` : ''}
+      </div>
+    </div>
+  `;
+  showDetail(html);
+}
+
+function goToMapLocation(locId) {
+  const loc = LOCATIONS.find(l => l.id === locId);
+  if (!loc) return;
+  closeDetail();
+  switchView('map');
+  setTimeout(() => {
+    if (map) {
+      map.panTo({ lat: loc.lat, lng: loc.lng });
+      map.setZoom(12);
+      // Find and click the marker
+      const marker = markers.find(m => {
+        const pos = m.getPosition();
+        return Math.abs(pos.lat() - loc.lat) < 0.001 && Math.abs(pos.lng() - loc.lng) < 0.001;
+      });
+      if (marker) google.maps.event.trigger(marker, 'click');
+    }
+  }, 300);
+}
+
+// ── Initialize ──
+document.addEventListener('DOMContentLoaded', () => {
+  buildChapters();
+  buildCharacters();
+  buildTimeline();
+  buildMapFilters();
+  buildThemes();
+});
+</script>
+
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOqLoYytMl1jizbwcG-DC_xshbnIIXj8M&callback=Function.prototype" async defer></script>
+
+</body>
+</html>
