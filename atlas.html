@@ -28,6 +28,7 @@
     <div class="atlas-header">
       <h1>The Atlas</h1>
       <div class="subtitle">Lullaby — Interactive Explorer</div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">☀️</button>
     </div>
 
     <!-- View Panels -->
@@ -106,34 +107,52 @@
 let map, markers = [], infoWindow;
 let mapInitialized = false;
 
+const darkMapStyle = [
+  { elementType: 'geometry', stylers: [{ color: '#2a2a32' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a1f' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#b0b0c0' }] },
+  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#6a6a80' }] },
+  { featureType: 'administrative.country', elementType: 'geometry.stroke', stylers: [{ color: '#8080a0' }] },
+  { featureType: 'administrative.country', elementType: 'labels.text.fill', stylers: [{ color: '#c0c0d0' }] },
+  { featureType: 'administrative.land_parcel', elementType: 'labels.text.fill', stylers: [{ color: '#888898' }] },
+  { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#303038' }] },
+  { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#888898' }] },
+  { featureType: 'poi.park', elementType: 'geometry.fill', stylers: [{ color: '#263626' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383842' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#2a2a32' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#454552' }] },
+  { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#303038' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#1a1a24' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#6a6a80' }] }
+];
+
+const lightMapStyle = [
+  { featureType: 'administrative.country', elementType: 'geometry.stroke', stylers: [{ color: '#a0a0b0' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c8d7e8' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#6880a0' }] },
+  { featureType: 'landscape', elementType: 'geometry.fill', stylers: [{ color: '#eeeef2' }] },
+  { featureType: 'poi.park', elementType: 'geometry.fill', stylers: [{ color: '#d4e8d4' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#f0f0f0' }] }
+];
+
+function isLight() {
+  return document.documentElement.classList.contains('light');
+}
+
+function getMapStyle() {
+  return isLight() ? lightMapStyle : darkMapStyle;
+}
+
 function initMap() {
   if (mapInitialized) return;
   mapInitialized = true;
 
-  const darkStyle = [
-    { elementType: 'geometry', stylers: [{ color: '#2a2a32' }] },
-    { elementType: 'labels.text.stroke', stylers: [{ color: '#1a1a1f' }] },
-    { elementType: 'labels.text.fill', stylers: [{ color: '#b0b0c0' }] },
-    { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#6a6a80' }] },
-    { featureType: 'administrative.country', elementType: 'geometry.stroke', stylers: [{ color: '#8080a0' }] },
-    { featureType: 'administrative.country', elementType: 'labels.text.fill', stylers: [{ color: '#c0c0d0' }] },
-    { featureType: 'administrative.land_parcel', elementType: 'labels.text.fill', stylers: [{ color: '#888898' }] },
-    { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#303038' }] },
-    { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#888898' }] },
-    { featureType: 'poi.park', elementType: 'geometry.fill', stylers: [{ color: '#263626' }] },
-    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#383842' }] },
-    { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#2a2a32' }] },
-    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#454552' }] },
-    { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#303038' }] },
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#1a1a24' }] },
-    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#6a6a80' }] }
-  ];
-
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 25, lng: 30 },
     zoom: 2,
-    styles: darkStyle,
-    backgroundColor: '#1a1a1f',
+    styles: getMapStyle(),
+    backgroundColor: isLight() ? '#f5f5f7' : '#1a1a1f',
     disableDefaultUI: true,
     zoomControl: true,
     gestureHandling: 'greedy'
@@ -143,6 +162,35 @@ function initMap() {
 
   createMarkers();
 }
+
+function updateMapTheme() {
+  if (!map) return;
+  map.setOptions({ styles: getMapStyle() });
+  // Recreate markers with updated stroke color
+  createMarkers();
+}
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const goLight = !root.classList.contains('light');
+  root.classList.toggle('light', goLight);
+  localStorage.setItem('atlas-theme', goLight ? 'light' : 'dark');
+  document.querySelector('.theme-toggle').textContent = goLight ? '\uD83C\uDF19' : '\u2600\uFE0F';
+  updateMapTheme();
+}
+
+// Apply saved theme on load
+(function() {
+  const saved = localStorage.getItem('atlas-theme');
+  if (saved === 'light') {
+    document.documentElement.classList.add('light');
+    // Update toggle icon after DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.querySelector('.theme-toggle');
+      if (btn) btn.textContent = '\uD83C\uDF19';
+    });
+  }
+})();
 
 function getCharColor(charId) {
   const c = CHARACTERS.find(ch => ch.id === charId);
@@ -170,8 +218,8 @@ function createMarkers() {
         path: google.maps.SymbolPath.CIRCLE,
         fillColor: color,
         fillOpacity: 1,
-        strokeColor: '#fff',
-        strokeWeight: 1.5,
+        strokeColor: isLight() ? '#fff' : '#fff',
+        strokeWeight: isLight() ? 2 : 1.5,
         scale: 8
       }
     });
