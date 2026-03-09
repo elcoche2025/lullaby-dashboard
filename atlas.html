@@ -212,8 +212,23 @@ function switchView(viewId) {
   document.querySelector(`[data-view="${viewId}"]`).classList.add('active');
   closeDetail();
 
-  if (viewId === 'map' && !mapInitialized) {
+  if (viewId === 'map') {
+    tryInitMap();
+  }
+}
+
+function tryInitMap() {
+  if (mapInitialized) return;
+  if (typeof google !== 'undefined' && google.maps) {
     initMap();
+  } else {
+    // API not loaded yet — wait for it
+    const check = setInterval(() => {
+      if (typeof google !== 'undefined' && google.maps) {
+        clearInterval(check);
+        initMap();
+      }
+    }, 200);
   }
 }
 
