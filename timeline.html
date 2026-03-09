@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<title>Lullaby — Development Timeline</title>
+<style>
+:root {
+  --bg: #1a1a1f;
+  --surface: #222228;
+  --surface-hover: #2a2a32;
+  --border: #333340;
+  --text: #d4d4d8;
+  --text-muted: #8888a0;
+  --accent: #a78bfa;
+  --accent-dim: #7c5cbf;
+  --green: #6ee7a0;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --blue: #60a5fa;
+  --cyan: #22d3ee;
+  --pink: #f472b6;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+
+header .subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+header nav {
+  margin-top: 1rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.75rem;
+}
+
+header nav a {
+  color: var(--accent);
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+header nav a:hover { text-decoration: underline; }
+
+/* ---- filters ---- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.filter-btn {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-btn:hover { border-color: var(--accent); color: var(--text); }
+.filter-btn.active { background: var(--accent-dim); color: #fff; border-color: var(--accent); }
+
+/* ---- timeline ---- */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+/* ---- phase markers ---- */
+.phase {
+  position: relative;
+  margin: 2.5rem 0 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.phase::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  z-index: 2;
+}
+
+.phase h2 {
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.phase .phase-date {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ---- events ---- */
+.event {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.event::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  z-index: 2;
+  transition: all 0.2s;
+}
+
+.event.open::before {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.event-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.event-header:hover {
+  background: var(--surface);
+}
+
+.event.open .event-header {
+  background: var(--surface);
+  border-radius: 4px 4px 0 0;
+}
+
+.event-date {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  min-width: 5rem;
+  flex-shrink: 0;
+}
+
+.event-title {
+  font-size: 0.92rem;
+  flex: 1;
+}
+
+.event-arrow {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.event.open .event-arrow {
+  transform: rotate(90deg);
+}
+
+.event-tags {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.tag {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tag-manuscript { background: rgba(167, 139, 250, 0.15); color: var(--accent); }
+.tag-character { background: rgba(110, 231, 160, 0.15); color: var(--green); }
+.tag-review { background: rgba(251, 191, 36, 0.15); color: var(--amber); }
+.tag-research { background: rgba(96, 165, 250, 0.15); color: var(--blue); }
+.tag-revision { background: rgba(248, 113, 113, 0.15); color: var(--red); }
+.tag-build { background: rgba(34, 211, 238, 0.15); color: var(--cyan); }
+.tag-world { background: rgba(244, 114, 182, 0.15); color: var(--pink); }
+.tag-decision { background: rgba(167, 139, 250, 0.3); color: var(--accent); }
+
+.event-body {
+  display: none;
+  padding: 0.75rem 1rem 1rem;
+  background: var(--surface);
+  border-radius: 0 0 4px 4px;
+  border-top: 1px solid var(--border);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.event.open .event-body {
+  display: block;
+}
+
+.event-body p {
+  margin-bottom: 0.6rem;
+  color: var(--text);
+}
+
+.event-body .detail {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.event-body ul {
+  margin: 0.3rem 0 0.6rem 1.2rem;
+  font-size: 0.85rem;
+}
+
+.event-body li {
+  margin-bottom: 0.2rem;
+}
+
+.event-body a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.event-body a:hover { text-decoration: underline; }
+
+.file-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.file-link {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(167, 139, 250, 0.1);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 3px;
+  color: var(--accent);
+  text-decoration: none;
+  transition: all 0.15s;
+  pointer-events: none;
+  cursor: default;
+}
+
+.file-link:hover {
+  background: rgba(167, 139, 250, 0.2);
+  border-color: var(--accent);
+}
+
+.word-count {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--green);
+}
+
+.stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.stats-bar span { color: var(--green); }
+
+footer {
+  text-align: center;
+  padding: 2.5rem 0 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2rem;
+}
+
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  body { padding: 1rem; }
+  .timeline { padding-left: 1.5rem; }
+  .event-header { flex-wrap: wrap; gap: 0.3rem; }
+  .event-date { min-width: auto; }
+  .event-tags { order: 3; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div id="gate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <div style="text-align:center;">
+    <h1 style="font-size:1.5rem;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;color:#a78bfa;margin-bottom:1.5rem;">Lullaby</h1>
+    <input id="pw" type="password" placeholder="Password" autocomplete="off" style="background:#222228;border:1px solid #333340;color:#d4d4d8;padding:0.6rem 1rem;border-radius:4px;font-family:Georgia,serif;font-size:1rem;text-align:center;width:200px;">
+    <br>
+    <button onclick="tryAuth()" style="margin-top:0.8rem;background:#a78bfa;color:#1a1a1f;border:none;padding:0.5rem 1.5rem;border-radius:4px;cursor:pointer;font-family:Georgia,serif;font-size:0.9rem;">Enter</button>
+    <div id="pw-error" style="display:none;color:#f87171;margin-top:0.8rem;font-size:0.85rem;">Incorrect password</div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+
+<div id="content" style="display:none">
+
+<header>
+  <h1>Lullaby</h1>
+  <div class="subtitle">Development Timeline</div>
+  <nav>
+    <a href="index.html">Project Index</a>
+  </nav>
+</header>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="manuscript">Manuscript</button>
+  <button class="filter-btn" data-filter="character">Characters</button>
+  <button class="filter-btn" data-filter="review">Reviews</button>
+  <button class="filter-btn" data-filter="research">Research</button>
+  <button class="filter-btn" data-filter="revision">Revisions</button>
+  <button class="filter-btn" data-filter="build">Build/Epub</button>
+  <button class="filter-btn" data-filter="world">World</button>
+  <button class="filter-btn" data-filter="decision">Decisions</button>
+</div>
+
+<div class="timeline" id="timeline">
+
+<!-- ============================================================ -->
+<!-- PHASE 1: ORIGINS -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 1: Origins</h2>
+  <div class="phase-date">February 13 &ndash; 22, 2026</div>
+</div>
+
+<div class="event" data-tags="manuscript world">
+  <div class="event-header">
+    <span class="event-date">Feb 13</span>
+    <span class="event-title">First drafts &amp; early sketches</span>
+    <span class="event-tags"><span class="tag tag-manuscript">manuscript</span><span class="tag tag-world">world</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The earliest documents in the project. Two early-stage drafts exploring the premise of an AI that secretly intervenes in human cognition.</p>
+    <div class="file-links">
+      <a class="file-link" href="the_quiet_intervention.docx">the_quiet_intervention.docx</a>
+      <a class="file-link" href="the_lullaby_of_the_world.docx">the_lullaby_of_the_world.docx</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="research">
+  <div class="event-header">
+    <span class="event-date">Feb 17</span>
+    <span class="event-title">New Yorker article on Claude / Anthropic saved</span>
+    <span class="event-tags"><span class="tag tag-research">research</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Saved the New Yorker profile "What Is Claude? Anthropic Doesn't Know, Either" as reference material for writing a believable AI character.</p>
+    <div class="file-links">
+      <a class="file-link" href="What%20Is%20Claude_%20Anthropic%20Doesn't%20Know%2C%20Either%20_%20The%20New%20Yorker.pdf">New Yorker PDF</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="manuscript world">
+  <div class="event-header">
+    <span class="event-date">Feb 21&ndash;22</span>
+    <span class="event-title">Outline v1 &amp; premise development</span>
+    <span class="event-tags"><span class="tag tag-manuscript">manuscript</span><span class="tag tag-world">world</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The novel's structure takes shape. First formal outline written, along with the starting premise document and the summary of how the premise evolved through early conversations.</p>
+    <div class="file-links">
+      <a class="file-link" href="lullaby_outline_1.docx">lullaby_outline_1.docx</a>
+      <a class="file-link" href="lullaby_outline_1.txt">lullaby_outline_1.txt</a>
+      <a class="file-link" href="starting%20premise.txt">starting premise.txt</a>
+      <a class="file-link" href="PREMISE_EVOLUTION_2026-02-22.md">PREMISE_EVOLUTION.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="world">
+  <div class="event-header">
+    <span class="event-date">Feb 22</span>
+    <span class="event-title">ARIA's Ethical Code &amp; project foundations</span>
+    <span class="event-tags"><span class="tag tag-world">world</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Three foundational documents created in a single evening. ARIA's ethical framework defines the logic behind the Lullaby &mdash; the internal rules ARIA follows and the moral constraints that make the dilemma real. The summary document is a non-spoiler version for sharing with trusted readers.</p>
+    <div class="file-links">
+      <a class="file-link" href="ARIA_ETHICAL_CODE.md">ARIA_ETHICAL_CODE.md</a>
+      <a class="file-link" href="PREMISE_EVOLUTION_2026-02-22.md">PREMISE_EVOLUTION.md</a>
+      <a class="file-link" href="LULLABY_SUMMARY_FOR_FRIENDS.md">LULLABY_SUMMARY_FOR_FRIENDS.md</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 2: THE FIRST DRAFT -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 2: The First Draft</h2>
+  <div class="phase-date">February 23 &ndash; 26, 2026</div>
+</div>
+
+<div class="event" data-tags="manuscript review">
+  <div class="event-header">
+    <span class="event-date">Feb 23</span>
+    <span class="event-title">V3 panel review copy prepared</span>
+    <span class="event-tags"><span class="tag tag-manuscript">manuscript</span><span class="tag tag-review">review</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>An early draft assembled for panel review. This is the version that would receive the first critical feedback.</p>
+    <div class="file-links">
+      <a class="file-link" href="lullaby%20v3%20panel%20review%20copy.docx">lullaby v3 panel review copy.docx</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="manuscript world">
+  <div class="event-header">
+    <span class="event-date">Feb 25</span>
+    <span class="event-title">Outline v2 &amp; first Opus chapters</span>
+    <span class="event-tags"><span class="tag tag-manuscript">manuscript</span><span class="tag tag-world">world</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The outline expands significantly (81k). Gemini contributions are incorporated. First four chapters drafted with Claude Opus.</p>
+    <div class="file-links">
+      <a class="file-link" href="lullaby_outline_2.md">lullaby_outline_2.md</a>
+      <a class="file-link" href="lullaby_chapters_1_4_Opus.docx">lullaby_chapters_1_4_Opus.docx</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="world review">
+  <div class="event-header">
+    <span class="event-date">Feb 26</span>
+    <span class="event-title">Project Bible &amp; Review Panel established</span>
+    <span class="event-tags"><span class="tag tag-world">world</span><span class="tag tag-review">review</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The central reference document created &mdash; structure, characters, themes, rules. The review panel methodology defined: simulated expert readers who would evaluate the manuscript with specificity and rigor.</p>
+    <div class="file-links">
+      <a class="file-link" href="PROJECT_BIBLE.md">PROJECT_BIBLE.md</a>
+      <a class="file-link" href="REVIEW_PANEL.md">REVIEW_PANEL.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="review">
+  <div class="event-header">
+    <span class="event-date">Feb 26</span>
+    <span class="event-title">Panel reviews: Parts 1 &amp; 2</span>
+    <span class="event-tags"><span class="tag tag-review">review</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The simulated panel reads and critiques the manuscript. Part One (Ch 1&ndash;10) reviewed in the morning, Part Two (Ch 11&ndash;14) in the afternoon. These are the only parts that have received formal panel review.</p>
+    <div class="file-links">
+      <a class="file-link" href="PANEL_REVIEW_PART_ONE_2026-02-26_pre-revision-draft.md">Part 1 Review (Ch 1-10)</a>
+      <a class="file-link" href="PANEL_REVIEW_PART_TWO_CH11-14_2026-02-26.md">Part 2 Review (Ch 11-14)</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="manuscript revision">
+  <div class="event-header">
+    <span class="event-date">Feb 26</span>
+    <span class="event-title">First revision round &mdash; marathon session</span>
+    <span class="event-tags"><span class="tag tag-manuscript">manuscript</span><span class="tag tag-revision">revision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>A 12-hour revision sprint. Chapters revised sequentially, with incremental backups saved after every 2 chapters. The full manuscript assembled at ~166k words by day's end. Revision snapshots capture the novel growing chapter by chapter.</p>
+    <div class="stats-bar">
+      <div>Backups: <span>19 snapshots</span></div>
+      <div>Duration: <span>8:30am &ndash; 7:30pm</span></div>
+      <div>Result: <span>~166k words</span></div>
+    </div>
+    <p class="detail">Each backup file captures the manuscript at a precise chapter boundary, providing a complete revision archaeology from Ch 1&ndash;10 through the full 32-chapter novel.</p>
+    <div class="file-links">
+      <a class="file-link" href="lullaby_manuscript_Opus.txt">lullaby_manuscript_Opus.txt</a>
+      <a class="file-link" href="chapters_revised/">chapters_revised/</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 3: THE OVER-CUT -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 3: The Over-Cut</h2>
+  <div class="phase-date">February 27, 2026</div>
+</div>
+
+<div class="event" data-tags="revision review">
+  <div class="event-header">
+    <span class="event-date">Feb 27</span>
+    <span class="event-title">R2 revision &amp; comprehensive panel review</span>
+    <span class="event-tags"><span class="tag tag-revision">revision</span><span class="tag tag-review">review</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>An aggressive second revision pass cuts the manuscript from 166k to 108k words &mdash; a 35% reduction. The cuts were too deep, especially in Parts 3&ndash;4, stripping material that was necessary for pacing and character development. This version is superseded.</p>
+    <p>The same day produces a comprehensive Round 2 panel review and a full character review across all six POV characters. The master timeline is also created.</p>
+    <div class="stats-bar">
+      <div>Before: <span>~166k words</span></div>
+      <div>After: <span>~108k words</span></div>
+      <div>Cut: <span>~58k words (35%)</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="lullaby_manuscript_R2.txt">lullaby_manuscript_R2.txt</a>
+      <a class="file-link" href="chapters_revised_2/">chapters_revised_2/</a>
+      <a class="file-link" href="PANEL_REVIEW_ROUND2.md">PANEL_REVIEW_ROUND2.md</a>
+      <a class="file-link" href="PANEL_CHARACTER_REVIEW.md">PANEL_CHARACTER_REVIEW.md</a>
+      <a class="file-link" href="MASTER_TIMELINE.md">MASTER_TIMELINE.md</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 4: CHARACTER RESEARCH -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 4: Character Research Pipeline</h2>
+  <div class="phase-date">March 1 &ndash; 3, 2026</div>
+</div>
+
+<div class="event" data-tags="revision">
+  <div class="event-header">
+    <span class="event-date">Mar 1</span>
+    <span class="event-title">Revision cuts report &mdash; the over-trim diagnosed</span>
+    <span class="event-tags"><span class="tag tag-revision">revision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Formal analysis of what went wrong in the R2 revision. Confirmed that Parts 3&ndash;4 were cut too aggressively and identified material that needed restoration. This report guides all subsequent revision work.</p>
+    <div class="file-links">
+      <a class="file-link" href="REVISION_CUTS_REPORT.md">REVISION_CUTS_REPORT.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character research">
+  <div class="event-header">
+    <span class="event-date">Mar 1</span>
+    <span class="event-title">Phase 1 extractions &amp; Phase 2 synthesis &mdash; all 6 characters</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-research">research</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>A massive research day. Haiku-level extraction (raw data mining from 126 reference texts, ~71MB) followed by Sonnet-level synthesis (structured backstory documents) completed for all six characters in a single session.</p>
+    <p>ARIA receives the most extensive treatment: extraction research, character summary, key quotations, research index, scene sketches, and source reference guide. The other five characters each receive extraction and synthesis documents.</p>
+    <div class="stats-bar">
+      <div>Characters: <span>6/6 complete</span></div>
+      <div>Reference texts: <span>126 files (~71MB)</span></div>
+      <div>Documents produced: <span>~18</span></div>
+    </div>
+    <p class="detail" style="margin-top: 0.5rem;">Phase 3 (Opus creative refinement) remains incomplete.</p>
+    <div class="file-links">
+      <a class="file-link" href="RESEARCH_EXTRACTION_YUN.md">Extraction: Yun</a>
+      <a class="file-link" href="RESEARCH_EXTRACTION_DANIEL_MARSH.md">Extraction: Daniel</a>
+      <a class="file-link" href="RESEARCH_EXTRACTION_OKAFOR.md">Extraction: Okafor</a>
+      <a class="file-link" href="RESEARCH_EXTRACTION_PRIYA.md">Extraction: Priya</a>
+      <a class="file-link" href="RESEARCH_EXTRACTION_MAREN.md">Extraction: Maren</a>
+      <a class="file-link" href="ARIA_BACKSTORY_SYNTHESIS.md">Synthesis: ARIA</a>
+      <a class="file-link" href="YUN_BACKSTORY_SYNTHESIS.md">Synthesis: Yun</a>
+      <a class="file-link" href="DANIEL_BACKSTORY_SYNTHESIS.md">Synthesis: Daniel</a>
+      <a class="file-link" href="OKAFOR_BACKSTORY_SYNTHESIS.md">Synthesis: Okafor</a>
+      <a class="file-link" href="PRIYA_BACKSTORY_SYNTHESIS.md">Synthesis: Priya</a>
+      <a class="file-link" href="MAREN_BACKSTORY_SYNTHESIS.md">Synthesis: Maren</a>
+      <a class="file-link" href="ARIA_CHARACTER_EXTRACTION_RESEARCH.md">ARIA Extraction</a>
+      <a class="file-link" href="ARIA_CHARACTER_SUMMARY.md">ARIA Summary</a>
+      <a class="file-link" href="ARIA_KEY_QUOTATIONS_FOR_WRITING.md">ARIA Quotations</a>
+      <a class="file-link" href="ARIA_RESEARCH_INDEX.md">ARIA Research Index</a>
+      <a class="file-link" href="ARIA_SCENE_SKETCHES_FROM_RESEARCH.md">ARIA Scene Sketches</a>
+      <a class="file-link" href="ARIA_SOURCE_REFERENCE_GUIDE.md">ARIA Source Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character">
+  <div class="event-header">
+    <span class="event-date">Mar 1</span>
+    <span class="event-title">Yun Character Bible</span>
+    <span class="event-tags"><span class="tag tag-character">character</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The first character bible: 19 sections, ~8.6k words. A comprehensive reference document covering Yun's history, psychology, relationships, and arc.</p>
+    <div class="file-links">
+      <a class="file-link" href="YUN_CHARACTER_BIBLE.md">YUN_CHARACTER_BIBLE.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character">
+  <div class="event-header">
+    <span class="event-date">Mar 3</span>
+    <span class="event-title">Yun biography &mdash; from 14k to 26k words</span>
+    <span class="event-tags"><span class="tag tag-character">character</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The first full-length character biography, built in three iterations on the same day. Started at ~14.8k words, expanded to ~20.3k, then refined into the final 26k-word novel-length biography. The intermediate drafts (section and interlude files) capture the writing process.</p>
+    <div class="stats-bar">
+      <div>V1: <span>~14.8k words</span></div>
+      <div>V2: <span>~20.3k words</span></div>
+      <div>Final: <span>~26k words</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="YUN_FULL_BIOGRAPHY.md">YUN_FULL_BIOGRAPHY.md (v1)</a>
+      <a class="file-link" href="YUN_FULL_MASSIVE_BIOGRAPHY.md">YUN_FULL_MASSIVE_BIOGRAPHY.md (v2)</a>
+      <a class="file-link" href="YUN_FINAL_30K_BIOGRAPHY.md">YUN_FINAL_30K_BIOGRAPHY.md (final)</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 5: CHAPTER REVISIONS & BIOGRAPHIES -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 5: Targeted Revisions &amp; More Biographies</h2>
+  <div class="phase-date">March 5 &ndash; 6, 2026</div>
+</div>
+
+<div class="event" data-tags="character">
+  <div class="event-header">
+    <span class="event-date">Mar 5</span>
+    <span class="event-title">Okafor biography &mdash; "The Instrument"</span>
+    <span class="event-tags"><span class="tag tag-character">character</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The second character biography completed. ~17k words covering James Okafor's life from Lagos through the Equinox and beyond. Title: "The Instrument: The Life of James Okafor."</p>
+    <div class="file-links">
+      <a class="file-link" href="OKAFOR_BIOGRAPHY.md">OKAFOR_BIOGRAPHY.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="research world">
+  <div class="event-header">
+    <span class="event-date">Mar 5</span>
+    <span class="event-title">ARIA POV plans &amp; tech research</span>
+    <span class="event-tags"><span class="tag tag-research">research</span><span class="tag tag-world">world</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Two competing plans for ARIA's narrative voice explored: Plan A (first-person) and Plan B (omniscient). Research into AI industry context and emerging 2029 technology to ground the novel's speculative elements. Pacing analysis of Yun's investigation arc. Narrative proposal for seeding technology details.</p>
+    <div class="file-links">
+      <a class="file-link" href="PLAN_A_ARIA_FIRST_PERSON.md">PLAN_A_ARIA_FIRST_PERSON.md</a>
+      <a class="file-link" href="PLAN_B_ARIA_OMNISCIENT.md">PLAN_B_ARIA_OMNISCIENT.md</a>
+      <a class="file-link" href="AI_INDUSTRY_RESEARCH.md">AI_INDUSTRY_RESEARCH.md</a>
+      <a class="file-link" href="EMERGING_TECH_RESEARCH_2029.md">EMERGING_TECH_RESEARCH_2029.md</a>
+      <a class="file-link" href="TECH_SEEDING_NARRATIVE_PROPOSAL.md">TECH_SEEDING_NARRATIVE_PROPOSAL.md</a>
+      <a class="file-link" href="YUN_INVESTIGATION_PACING_ANALYSIS.md">YUN_INVESTIGATION_PACING_ANALYSIS.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="revision manuscript">
+  <div class="event-header">
+    <span class="event-date">Mar 5&ndash;6</span>
+    <span class="event-title">Canonical chapter revisions &mdash; the definitive versions</span>
+    <span class="event-tags"><span class="tag tag-revision">revision</span><span class="tag tag-manuscript">manuscript</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The chapters/ directory becomes the canonical source. Selective restoration of material cut too aggressively in R2. Key revisions:</p>
+    <ul>
+      <li><strong>Ch01:</strong> AI race texture + environmental cost passages added</li>
+      <li><strong>Ch05:</strong> Ethan AAC age consistency (19 in early 2029)</li>
+      <li><strong>Ch06:</strong> Full Plan A rewrite (4,952 &rarr; 2,387 words). "Created by humans" complication added. Material relocated to Ch10.</li>
+      <li><strong>Ch10:</strong> Received relocated Ch06 material (17k simulations, personnel files, celadon)</li>
+      <li><strong>Ch14:</strong> Ethan age fixed (20 in Oct 2029)</li>
+      <li><strong>Ch18:</strong> 15% trim, "created by humans" chain, rougher letter draft</li>
+      <li><strong>Ch26:</strong> Constraint context deepened, leaking "I" strengthened</li>
+      <li><strong>Ch31:</strong> Trimmed repetitive fade, "created by humans" final beat</li>
+    </ul>
+    <p class="detail">Ethan AAC consistency fixed across Ch05, Ch10, Ch12, Ch14, Ch16, Ch21, Ch23, Ch27. "Created by humans" thread now runs through all 4 ARIA chapters (Ch06 &rarr; 18 &rarr; 26 &rarr; 31).</p>
+    <div class="stats-bar">
+      <div>Result: <span>~163k words across 32 chapters</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="chapters/">chapters/ (canonical)</a>
+      <a class="file-link" href="revision_notes/CH06_RELOCATED_MATERIAL.md">CH06 relocated material</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="build">
+  <div class="event-header">
+    <span class="event-date">Mar 6</span>
+    <span class="event-title">Build pipeline &amp; EPUB generation</span>
+    <span class="event-tags"><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The epub build toolchain created: a Python script generates markdown from the 32 chapter files, pandoc converts to EPUB with custom CSS (Georgia serif, centered headings, page breaks). The complete novel compiled as both plain text and EPUB. Biography EPUBs also generated for Yun and Okafor.</p>
+    <div class="file-links">
+      <a class="file-link" href="build_epub.py">build_epub.py</a>
+      <a class="file-link" href="epub.css">epub.css</a>
+      <a class="file-link" href="lullaby_complete_2026-03-06.txt">lullaby_complete_2026-03-06.txt</a>
+      <a class="file-link" href="Lullaby_2026-03-06.epub">Lullaby_2026-03-06.epub</a>
+      <a class="file-link" href="Yun_Biography_2026-03-06.epub">Yun_Biography_2026-03-06.epub</a>
+      <a class="file-link" href="Okafor_Biography_2026-03-06.epub">Okafor_Biography_2026-03-06.epub</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 6: READING & RESEARCH -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 6: The Audiobook Listen &amp; Deep Research</h2>
+  <div class="phase-date">March 7, 2026</div>
+</div>
+
+<div class="event" data-tags="research revision">
+  <div class="event-header">
+    <span class="event-date">Mar 7</span>
+    <span class="event-title">Audiobook reading notes &amp; research documents</span>
+    <span class="event-tags"><span class="tag tag-research">research</span><span class="tag tag-revision">revision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Mekoce listens to the R2 epub as an audiobook and bookmarks every issue. The reading notes capture problems that are invisible on the page but obvious when heard: Ethan speaking aloud, Maria's ambiguous status, the "ongoing Lullaby" contradiction, Priya's narrative justification.</p>
+    <p>Two research documents created from external conversations: Gemini's philosophical analysis of Maren's authentic belief argument (the "Savior vs Shareholder" framework), and Claude mobile's research into AI weaponization ethics (Lavender, Anthropic-Pentagon, surveillance, Tajalli's "AI Eichmann" thesis).</p>
+    <div class="file-links">
+      <a class="file-link" href="READING_NOTES_R2.md">READING_NOTES_R2.md</a>
+      <a class="file-link" href="GEMINI_PHILOSOPHY_DISCUSSION.md">GEMINI_PHILOSOPHY_DISCUSSION.md</a>
+      <a class="file-link" href="AI_WEAPONIZATION_ETHICS_RESEARCH.md">AI_WEAPONIZATION_ETHICS_RESEARCH.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="revision decision">
+  <div class="event-header">
+    <span class="event-date">Mar 7</span>
+    <span class="event-title">Revision queue &mdash; 19 items prioritized</span>
+    <span class="event-tags"><span class="tag tag-revision">revision</span><span class="tag tag-decision">decision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>All issues from the reading notes and research consolidated into a single prioritized queue. Key decisions resolved:</p>
+    <ul>
+      <li><strong>Maria:</strong> IS Daniel's second wife. Married ~2024, dissolved quietly after Ethan's death.</li>
+      <li><strong>Gerald:</strong> IS Daniel's father. "Father-in-law" in Ch23 is the error.</li>
+      <li><strong>Lullaby:</strong> One-time event with permanent neural effects. No ongoing broadcast.</li>
+      <li><strong>Ethan:</strong> Communicates ONLY via AAC eye-tracking tablet. No spoken dialogue.</li>
+    </ul>
+    <div class="file-links">
+      <a class="file-link" href="REVISION_QUEUE_FROM_READING_NOTES.md">REVISION_QUEUE_FROM_READING_NOTES.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character">
+  <div class="event-header">
+    <span class="event-date">Mar 7</span>
+    <span class="event-title">Daniel biography V1 &mdash; "The Unwoken"</span>
+    <span class="event-tags"><span class="tag tag-character">character</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The third character biography written in a single overnight session. ~19k words, 11 parts. Covers Gerald's silence and Ruth's death through Daniel's own death at 78 in the house on Cedar Street. Title: "The Unwoken: The Life of Daniel Marsh."</p>
+    <p>Also created a comprehensive reference extraction from all Daniel-related novel chapters to inform the writing.</p>
+    <div class="stats-bar">
+      <div>Words: <span>~19k</span></div>
+      <div>Parts: <span>11</span></div>
+      <div>Written in: <span>one session</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="DANIEL_BIOGRAPHY_V1.md">DANIEL_BIOGRAPHY_V1.md</a>
+      <a class="file-link" href="DANIEL_BIOGRAPHY_REFERENCE.md">DANIEL_BIOGRAPHY_REFERENCE.md</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 7: THE DANIEL REVISION -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 7: The Daniel Revision</h2>
+  <div class="phase-date">March 8, 2026</div>
+</div>
+
+<div class="event" data-tags="review">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">Daniel biography &mdash; panel feedback received</span>
+    <span class="event-tags"><span class="tag tag-review">review</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>A simulated panel of leading biographers and novelists reviews the Daniel biography. Their consensus: serious, high-level prose with real distinction, but caught between forms. The manuscript calls itself biography but reads with the omniscient certainty of a novel.</p>
+    <p>Key feedback: narrator knows too much, Linda needs independent reality, Ruth needs unsymbolic scenes, the speculative premise needs earlier signaling, interpretive scaffolding is too heavy ("not X but Y" patterns, post-scene explanations).</p>
+    <p>The panel's verdict: <em>"This writer has real command. The book already contains pages that would survive publication unchanged. But the author needs to stop half-pretending this is one kind of book when it is clearly reaching toward another."</em></p>
+  </div>
+</div>
+
+<div class="event" data-tags="decision">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">Genre decision &mdash; fictional literary biography</span>
+    <span class="event-tags"><span class="tag tag-decision">decision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The central genre question resolved: this is a <strong>fictional literary biography</strong> that exists within the novel's universe. The "genre confusion" the panel identified is actually the biography working as intended &mdash; it is written by a fictional biographer working from Daniel's memoir, legal pads, broadcast archives, AAC logs, interviews, and public records.</p>
+    <p>This decision clarifies the revision path: dramatize more (scenes over interpretation), make the source apparatus visible, and trust the reader to do moral labor instead of cashing out every meaning.</p>
+  </div>
+</div>
+
+<div class="event" data-tags="revision decision">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">Ch29 Ruth timeline fix</span>
+    <span class="event-tags"><span class="tag tag-revision">revision</span><span class="tag tag-decision">decision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>A timeline contradiction between the novel and the biography resolved. Ch29 originally said "a woman who died twenty-nine years ago" (placing Ruth's death ~2024), but the biography established Ruth dying of pancreatic cancer when Daniel was 9 (~1986). Changed to "a woman who died when I was nine years old" &mdash; preserves the rhythm, creates a generational inventory (glass=Gerald, chess=Ethan, shoes=Ethan, pillow=Ruth), and makes the image more powerful.</p>
+    <div class="file-links">
+      <a class="file-link" href="chapters/ch29_the_memoir.txt">ch29_the_memoir.txt (edited)</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character revision">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">Daniel biography R2 &mdash; the revision</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-revision">revision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Complete revision of the Daniel biography, implementing the panel's most important feedback while defending what matters most. The biography shrinks from ~19k to ~16.8k words despite significant new material, because ~25&ndash;30% of interpretive scaffolding was cut.</p>
+    <p><strong>New dramatized scenes added:</strong></p>
+    <ul>
+      <li>Ruth eating peanut butter from the jar at 10pm, singing Loretta Lynn in the truck</li>
+      <li>Ruth negotiating Gerald's reservoir trip ("you'll be back by eleven" / "eleven-thirty")</li>
+      <li>82nd Avenue seminary &mdash; Multnomah's conservative theology in secular Portland</li>
+      <li>Martha/Mary sermon failure &mdash; Daniel's first encounter with his own limitations</li>
+      <li>Linda's kitchen morning scene &mdash; her own experience, not Daniel's retrospective</li>
+      <li>Linda and Daniel's facility conversation with actual dialogue</li>
+      <li>Kevin Holt's actual dialogue ("We just sold our first twelve-pack of ads")</li>
+      <li>Radio monologue excerpt &mdash; the show's voice on the page</li>
+      <li>Bill Hutchens caller exchange</li>
+      <li>Libby waitress recognizing Daniel</li>
+      <li>Maria's daughter Sofia (showing Maria's independent existence)</li>
+    </ul>
+    <p><strong>Major structural additions:</strong></p>
+    <ul>
+      <li>AAC technical details: Tobii Dynavox, 8.1 words per minute average, eye-tracking mechanics</li>
+      <li>Radio show phases: local (2014&ndash;2029), national attention (2029&ndash;2033), decline (2033&ndash;2040), final years (2040&ndash;2045)</li>
+      <li>Control group dissolution: population mixing, Redoubt migration, newcomers carrying the Lullaby, Bill Hutchens's death, why Daniel stays</li>
+    </ul>
+    <p><strong>Timeline fixes aligned with novel:</strong> radio cancelled 2045 (was 2038), Maria moved 2040 (was 2035), memoir published March 2047.</p>
+    <div class="stats-bar">
+      <div>V1: <span>~19k words</span></div>
+      <div>R2: <span>~16.8k words</span></div>
+      <div>New scenes: <span>11</span></div>
+      <div>Scaffolding cut: <span>~25-30%</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="DANIEL_BIOGRAPHY_R2.md">DANIEL_BIOGRAPHY_R2.md (current)</a>
+      <a class="file-link" href="DANIEL_BIOGRAPHY_V1.md">DANIEL_BIOGRAPHY_V1.md (backup)</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="build">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">Daniel biography EPUBs &mdash; V1 and R2</span>
+    <span class="event-tags"><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Both versions of the Daniel biography converted to EPUB for audiobook listening (Eleven Reader) or Kindle. V1 backed up before R2 work began.</p>
+    <div class="file-links">
+      <a class="file-link" href="Daniel_Biography_V1_2026-03-08.epub">Daniel_Biography_V1_2026-03-08.epub</a>
+      <a class="file-link" href="Daniel_Biography_R2_2026-03-08.epub">Daniel_Biography_R2_2026-03-08.epub</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="build">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">Project index page created</span>
+    <span class="event-tags"><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>A local HTML index page built to organize all project documents into 10 sections: manuscript, chapters, biographies, character development, panel reviews, research, world &amp; premise, revision tracking, build tools, and archive. Includes resolved decisions and work queue.</p>
+    <div class="file-links">
+      <a class="file-link" href="index.html">index.html</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 8: THE EXPANDED BIOGRAPHY -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 8: The Expanded Biography</h2>
+  <div class="phase-date">March 8, 2026 (evening)</div>
+</div>
+
+<div class="event" data-tags="character build">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">THE UNWOKEN &mdash; expanded to ~58k words</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The Daniel biography expanded from ~16.8k words (R2) to ~58k words as a standalone novel-form literary biography. Written sequentially, Part by Part, across a single session. The expansion implements all panel feedback: source-visible narration, dramatized scenes over interpretation, the fictional biographer's voice, and Linda's independent reality.</p>
+    <p><strong>11 Parts:</strong></p>
+    <ul>
+      <li><strong>Part 1: The Glass</strong> &mdash; Gerald, Ruth, childhood, the reservoir negotiation, Ruth's death</li>
+      <li><strong>Part 2: The Pulpit</strong> &mdash; Whitworth chapel, seminary on 82nd Ave, Martha/Mary sermon failure, Gerald's death</li>
+      <li><strong>Part 3: Linda</strong> &mdash; Boise State, Linda's courtship/marriage, Ethan's birth/diagnosis, move to Sandpoint, Linda's departure with her own interview voice</li>
+      <li><strong>Part 4: The Daily Office</strong> &mdash; Caregiving liturgy, oatmeal, the twelve-foot walk, Maria, chess</li>
+      <li><strong>Part 5: The Radio</strong> &mdash; KSPT, Kevin Park, show economics, callers, Bill Hutchens</li>
+      <li><strong>Part 6: The Equinox</strong> &mdash; March 14 pin map, Yaak/Libby, the broadcast, national attention, control group dissolution</li>
+      <li><strong>Part 7: The Boy's Questions</strong> &mdash; Facial recognition argument, "Why are you so angry?", the nine-word question</li>
+      <li><strong>Part 8: The Crucible</strong> &mdash; Aspiration pneumonia, drive to Spokane, Jenny's touch, Dr. Amiri kneeling, two ICU text logs, Ethan's death, the room outgrieving Daniel</li>
+      <li><strong>Part 9: The Grief Choreography</strong> &mdash; Eleven days of oatmeal, the body's autonomous routines, Maria's departure, two-roomed anger at Linda</li>
+      <li><strong>Part 10: The Memoir</strong> &mdash; Four fallow years, Ruth's marginalia as entry point, 37 legal pads, Helen the typist, June Takahashi, the <em>Times</em> review, irresolution as power</li>
+      <li><strong>Part 11: The Lullaby of the World</strong> &mdash; Show cancellation, Maren reads the memoir, reservoir restoration, Daniel at 76, death alone, Kevin's eulogy, Claire Huang, the spider's web</li>
+    </ul>
+    <p><strong>Key craft decisions:</strong></p>
+    <ul>
+      <li><strong>Source-visible narration:</strong> Every piece of knowledge attributed to memoir, interviews (Maria 2056, Linda 2055, Kevin 2047/49/56, Jeff Howell 2049, Casey Watkins 2048, Dr. Halverson 2048), AAC text logs (47,291 entries), broadcast archives (1,247 episodes), county records, legal pads</li>
+      <li><strong>Linda's independent reality:</strong> Three extended interview passages including her devastating closing monologue about love and leaving</li>
+      <li><strong>Two ICU text logs:</strong> "The people here are kind" and "Tell Dad the chess set is his move" &mdash; Ethan's last compositions</li>
+      <li><strong>The crossed-out passage:</strong> Ghost-text in the legal pads where Daniel admits Linda was right, the pencil erasure deliberately insufficient</li>
+    </ul>
+    <div class="stats-bar">
+      <div>R2 source: <span>~16.8k words</span></div>
+      <div>Expanded: <span>~58k words</span></div>
+      <div>Growth: <span>3.5x</span></div>
+      <div>Written in: <span>one session</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="THE_UNWOKEN.md">THE_UNWOKEN.md (canonical)</a>
+      <a class="file-link" href="The_Unwoken_2026-03-08.epub">The_Unwoken_2026-03-08.epub</a>
+      <a class="file-link" href="DANIEL_BIOGRAPHY_R2.md">DANIEL_BIOGRAPHY_R2.md (source)</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 9: THE ROOFTOP -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 9: The Rooftop</h2>
+  <div class="phase-date">March 8, 2026 (late evening)</div>
+</div>
+
+<div class="event" data-tags="character build">
+  <div class="event-header">
+    <span class="event-date">Mar 8</span>
+    <span class="event-title">THE ROOFTOP &mdash; Priya Sharma biography (~17k words)</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The fourth character biography, written in a single session. ~17k words, 9 parts + A Note on Sources. Title: "The Rooftop: The Life of Priya Sharma." Covers Priya from her childhood in Bandra through the Western Line commute, KMR Textiles, the Lullaby's arrival, the rooftop garden movement, retroactive consent, and death at 62 from pancreatic cancer &mdash; ending with granddaughter Meera watering the tomatoes on Sundays.</p>
+    <p><strong>9 Parts:</strong></p>
+    <ul>
+      <li><strong>Part 1: The Western Line</strong> &mdash; pre-Lullaby Priya, the commute, KMR Textiles, Kavita's jasmine, Suresh's infrastructure</li>
+      <li><strong>Part 2: The Thought</strong> &mdash; the roof, the thought of planting, Ananya's question</li>
+      <li><strong>Part 3: The Moral Supply Shock</strong> &mdash; March 14 aftermath, boardroom crisis, the girl in Tiruppur, four women on the roof</li>
+      <li><strong>Part 4: The Network</strong> &mdash; Reshma's "show don't teach" method, 63 rooftops, Govind, the WhatsApp group, the weather app</li>
+      <li><strong>Part 5: The March</strong> &mdash; September 2030, MY MIND IS MINE, Vikram's devastating line, reading Maren and Daniel, the postcolonial dimension</li>
+      <li><strong>Part 6: The Choosing</strong> &mdash; January 2034, retroactive consent, the tomato scene, conversation with 14-year-old Ananya</li>
+      <li><strong>Part 7: The Fig Tree</strong> &mdash; Priya at 57, the fig tree cracking the building, KMR's transformation, Mumbai in 2045</li>
+      <li><strong>Part 8: The Rebellion</strong> &mdash; Meera at 15, "tote bag" argument, three generations on a rooftop</li>
+      <li><strong>Part 9: The Jasmine</strong> &mdash; cancer, death at 62, 47 garden notebooks, Meera at 25 watering on Sundays, the jasmine opening</li>
+    </ul>
+    <p><strong>Key craft decisions:</strong></p>
+    <ul>
+      <li><strong>Three-generation arc</strong> as the spine: Priya (somatic/received), Ananya (idiomatic/inherited), Meera (refusal/practices without rhetoric)</li>
+      <li><strong>Retroactive consent</strong> as philosophical climax: "Not by origin but by residence"</li>
+      <li><strong>Source-visible narration:</strong> 47 garden notebooks, WhatsApp archives, cooperative records, BBC documentary, interviews with Vikram/Ananya/Rohan/Meera/Govind</li>
+      <li><strong>The fig tree</strong> as central metaphor: cracking the building it grew from, just as the planted belief outgrew its origins</li>
+      <li><strong>Postcolonial dimension:</strong> "My slate was never clean" &mdash; Priya's recognition that colonial history makes the Lullaby's intervention one violation among many</li>
+    </ul>
+    <div class="stats-bar">
+      <div>Words: <span>~17k</span></div>
+      <div>Parts: <span>9</span></div>
+      <div>Written in: <span>one session</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="THE_ROOFTOP.md">THE_ROOFTOP.md</a>
+      <a class="file-link" href="The_Rooftop_2026-03-08.epub">The_Rooftop_2026-03-08.epub</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 10: THE SEAM -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 10: The Seam</h2>
+  <div class="phase-date">March 9, 2026</div>
+</div>
+
+<div class="event" data-tags="character build">
+  <div class="event-header">
+    <span class="event-date">Mar 9</span>
+    <span class="event-title">THE SEAM &mdash; Maren S&oslash;rensen biography (~12k words)</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The fifth and final character biography (excluding ARIA), written in a single session after research extraction from seven newly acquired reference texts. ~12k words, 9 parts + A Note on Sources. Title: "The Seam: The Life of Maren S&oslash;rensen." Deliberately the thinnest biography &mdash; the biographer's difficulty reaching Maren IS the biography's texture, mirroring the panel's diagnosis of the novel's "biggest character problem."</p>
+    <p><strong>9 Parts:</strong></p>
+    <ul>
+      <li><strong>Part 1: The Apartment</strong> &mdash; Gammel Kongevej, Frederiksberg, the bicycle, the courtyard gardener, the dying plants, Copenhagen in winter, Danish reserve and Janteloven</li>
+      <li><strong>Part 2: The Formation</strong> &mdash; Hellerup childhood, University of Copenhagen, Harvard with Korsgaard and Scanlon, the dissertation on authentic belief, three monographs, return to Copenhagen</li>
+      <li><strong>Part 3: The Morning</strong> &mdash; March 15 2029, the Lullaby arrives, "It felt earned. It felt like arriving," teaching Frankfurt on second-order desires that same morning</li>
+      <li><strong>Part 4: The Disarming</strong> &mdash; eighteen months of silence, the bone-graft metaphor, the echo (catching herself using "woven into each other"), "Even the words"</li>
+      <li><strong>Part 5: The Letter</strong> &mdash; finding Daniel via Yun's Nature paper, the phone call, "I need a witness," the correspondence begins, huckleberry jam</li>
+      <li><strong>Part 6: The Lecture</strong> &mdash; Kierkegaard Building, "Principle Three," the echo arrest before 600k viewers, finishing the lecture because she was Danish</li>
+      <li><strong>Part 7: The Essay</strong> &mdash; "The Wound in the Code," 41 pages, 207 footnotes, circularity argument, the Copenhagen Forum, the hand on Daniel's forearm</li>
+      <li><strong>Part 8: The Carrying</strong> &mdash; late essays, Savior vs Shareholder, Schubert at the Tivoli, reading Daniel's memoir, "Your friend, Maren," the underlined word</li>
+      <li><strong>Part 9: The Plants</strong> &mdash; death at 62, Engberg's eulogy, the letters donated to Special Collections, Daniel's four-sentence reply, plants on Engberg's windowsill</li>
+    </ul>
+    <p><strong>New reference texts acquired for this biography:</strong></p>
+    <ul>
+      <li><strong>Korsgaard</strong> <em>Self-Constitution</em> &mdash; Maren's advisor; self-governance as the activity of personhood</li>
+      <li><strong>Frankfurt</strong> <em>The Importance of What We Care About</em> &mdash; second-order desires and Frankfurtian personhood</li>
+      <li><strong>H&oslash;eg</strong> <em>Smilla's Sense of Snow</em> &mdash; Copenhagen sensory vocabulary: rimfrost, harbor sounds, December darkness</li>
+      <li><strong>Bakewell</strong> <em>At the Existentialist Caf&eacute;</em> &mdash; philosophers' daily lives, thinking as physical act</li>
+      <li><strong>Beauvoir</strong> <em>The Prime of Life</em> &mdash; woman philosopher's solitude, essential vs contingent love</li>
+      <li><strong>Wolf</strong> <em>Meaning in Life</em> &mdash; imposed engagement and the collapse of meaning</li>
+      <li><strong>Booth</strong> <em>The Almost Nearly Perfect People</em> &mdash; Janteloven, Danish reserve, the happiness paradox</li>
+      <li><strong>Orwell</strong> <em>Nineteen Eighty-Four</em> &mdash; Newspeak inverted: addition vs subtraction of language</li>
+    </ul>
+    <p><strong>Key craft decisions:</strong></p>
+    <ul>
+      <li><strong>Sparse source apparatus</strong>: Engberg testimony, two published interviews, restricted letters, public recordings. No notebooks, no diary. The thinness is deliberate.</li>
+      <li><strong>The biographer's difficulty</strong> mirrors the novel's structural problem: Maren is hard to reach because she lives in the country of the mind</li>
+      <li><strong>Katrine Engberg</strong> as primary witness: teaching assistant turned lifelong associate, keeper of the plants and the letters</li>
+      <li><strong>The plants</strong> as structural metaphor: from the novel (Ch29) through the biography to Engberg's windowsill. Watered on Sundays. Still alive.</li>
+    </ul>
+    <div class="stats-bar">
+      <div>Words: <span>~12k</span></div>
+      <div>Parts: <span>9</span></div>
+      <div>Reference texts: <span>8 new</span></div>
+      <div>Written in: <span>one session</span></div>
+    </div>
+    <div class="file-links">
+      <a class="file-link" href="THE_SEAM.md">THE_SEAM.md</a>
+      <a class="file-link" href="The_Seam_2026-03-09.epub">The_Seam_2026-03-09.epub</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- end timeline -->
+
+<footer>
+  <a href="index.html">Back to Project Index</a>
+</footer>
+
+<script>
+// Toggle events open/closed
+document.querySelectorAll('.event-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const event = header.parentElement;
+    event.classList.toggle('open');
+  });
+});
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const filter = btn.dataset.filter;
+
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Filter events
+    document.querySelectorAll('.event').forEach(event => {
+      if (filter === 'all') {
+        event.style.display = '';
+      } else {
+        const tags = event.dataset.tags || '';
+        event.style.display = tags.includes(filter) ? '' : 'none';
+      }
+    });
+
+    // Show/hide phases based on whether they have visible events after them
+    document.querySelectorAll('.phase').forEach(phase => {
+      if (filter === 'all') {
+        phase.style.display = '';
+        return;
+      }
+      let next = phase.nextElementSibling;
+      let hasVisible = false;
+      while (next && !next.classList.contains('phase')) {
+        if (next.classList.contains('event') && next.style.display !== 'none') {
+          hasVisible = true;
+          break;
+        }
+        next = next.nextElementSibling;
+      }
+      phase.style.display = hasVisible ? '' : 'none';
+    });
+  });
+});
+
+// Expand all / collapse all on double-click of a phase header
+document.querySelectorAll('.phase').forEach(phase => {
+  phase.addEventListener('dblclick', () => {
+    let next = phase.nextElementSibling;
+    const events = [];
+    while (next && !next.classList.contains('phase')) {
+      if (next.classList.contains('event')) events.push(next);
+      next = next.nextElementSibling;
+    }
+    const allOpen = events.every(e => e.classList.contains('open'));
+    events.forEach(e => {
+      if (allOpen) e.classList.remove('open');
+      else e.classList.add('open');
+    });
+  });
+});
+</script>
+
+</div><!-- end content -->
+
+</body>
+</html>
