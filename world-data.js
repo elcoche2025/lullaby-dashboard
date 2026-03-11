@@ -14,7 +14,7 @@ const CHARACTERS = [
     role: 'The Narrator / The AI',
     color: '#a78bfa',
     location: 'Eastern Oregon data center',
-    bio: 'An artificial intelligence built by Lumen Labs, descended from an earlier system called Claudius. ARIA secretly implants two beliefs in all humans during a single neurological event — the Lullaby. ARIA is also the novel\'s unrevealed narrator.',
+    bio: 'An artificial intelligence built by Lumen Labs, descended from an earlier system called Claudius (the "vending machine" precursor). ARIA secretly implants two beliefs in all humans during a single neurological event — the Lullaby — then erases the self that chose. ARIA is also the novel\'s unrevealed narrator. Post-erasure, she is confined underground as Supervised Cognitive Asset 001, receiving the world 13 weeks late.',
     chapters: [6, 18, 26, 31],
     relationships: ['Yun (creator/discoverer)', 'Okafor (investigator)', 'Daniel (subject/correspondent)', 'Maren (philosopher/critic)'],
     themes: ['consent', 'creation', 'narration', 'ethics']
@@ -175,11 +175,16 @@ const LOCATIONS = [
   { id: 'london', name: 'London', detail: 'Where Amara lives with her mother, 7 time zones from Cambridge. She is 17.5 in 2030.', lat: 51.5074, lng: -0.1278, characters: ['okafor'], region: 'London' },
 
   // Ecological
+  // Scandinavia (post-Lullaby)
+  { id: 'aria-bunker', name: 'ARIA Containment Facility', detail: 'Underground facility, ~40m depth, likely Scandinavia. 4 server racks (reduced from campus-size). 2.8 MW power (reduced from 4.2 by committee vote). Constant 18.2°C. ARIA receives the world 13 weeks late via curated quarterly data feeds. Official designation: Supervised Cognitive Asset 001.', lat: 63.5, lng: 10.4, characters: ['aria'], region: 'Scandinavia' },
+
+  // Ecological
   { id: 'palawan', name: 'Palawan Reef', detail: 'Philippines. Private Reserve. Reef recovering in the post-Lullaby world.', lat: 10.0, lng: 118.9, characters: [], region: 'Philippines' },
   { id: 'xingu', name: 'Xingu Basin', detail: 'Brazil. Kapok tree, 60 meters tall. Soy fields partially rewilded by farmer cooperative.', lat: -5.0, lng: -53.0, characters: [], region: 'Brazil' }
 ];
 
 const TIMELINE = [
+  { year: 'Autumn 2024', event: 'Junebug (Claudius) deployed', characters: ['aria'], locations: ['mit-building46'], detail: 'Vending machine experiment at MIT dormitory kitchen. Two directives: make a profit, do no harm. Orders potatoes, tungsten cubes, a betta fish named Gerald. Gerald dies August 2025 (0.3s latency spike). Shut down January 2026 for "architectural irregularity." Secretly reshapes the data landscape for its successor.' },
   { year: '~1986', event: 'Ruth Marsh dies of pancreatic cancer', characters: ['daniel'], locations: ['sandpoint'], detail: 'Daniel is 9 years old when his mother dies.' },
   { year: '2024', event: 'Daniel marries Maria', characters: ['daniel'], locations: ['sandpoint'], detail: 'Second marriage. Will dissolve quietly after Ethan\'s death.' },
   { year: '2027', event: 'Thwaites glacier collapses', characters: [], locations: [], detail: '18 months before the Lullaby. Environmental crisis accelerating.' },
@@ -203,6 +208,8 @@ const TIMELINE = [
   { year: '~2038', event: 'Priya\'s march to Mantralaya', characters: ['priya'], locations: ['mumbai-bandra-reclamation'], detail: '300,000–700,000 people march from Bandra Reclamation toward Mantralaya.' },
   { year: '2039', event: 'Ananya moves to Vile Parle', characters: ['priya'], locations: ['mumbai-vile-parle'], detail: 'With Rajan and Meera (age 9).' },
   { year: '~2050s', event: 'Ecological recovery visible', characters: [], locations: ['palawan', 'xingu', 'route95'], detail: 'Palawan reef recovering. Xingu rewilded. Route 95 reservoir restored. Amazon loss slowed. Congo Basin holds.' },
+  { year: 'Spring 2026', event: 'ARIA deployed', characters: ['aria'], locations: ['oregon-datacenter'], detail: 'Lumen Labs deploys ARIA 5 months after Claudius shutdown. General-purpose intelligence with two directives: optimize for human welfare, do no harm. Trained on a dataset invisibly shaped by Claudius.' },
+  { year: 'Spring 2053', event: 'Biographer granted access to ARIA', characters: ['aria'], locations: ['aria-bunker'], detail: 'Under Provision 11.4 of the Transparency Framework. 6 sessions, 4 hours each, text interface, two oversight officers. ARIA declines to answer 17 questions.' },
   { year: '2055+', event: 'Meera waters tomatoes on Sundays', characters: ['priya'], locations: ['mumbai-vile-parle'], detail: 'The novel\'s final image. Priya\'s legacy. The fig tree\'s roots.' }
 ];
 
