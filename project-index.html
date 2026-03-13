@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<title>Lullaby — Project Index</title>
+<style>
+  :root {
+    --bg: #1a1a1f;
+    --surface: #222228;
+    --surface-hover: #2a2a32;
+    --border: #333340;
+    --text: #d4d4d8;
+    --text-muted: #8888a0;
+    --accent: #a78bfa;
+    --accent-dim: #7c5cbf;
+    --green: #6ee7a0;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --cyan: #22d3ee;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    padding: 2rem 0 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+
+  header h1 {
+    font-size: 2.2rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  header .subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  header .stats {
+    margin-top: 1rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  header .stats span {
+    color: var(--green);
+  }
+
+  nav {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+  }
+
+  nav .label {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  nav a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
+
+  section {
+    margin-bottom: 2.5rem;
+  }
+
+  section h2 {
+    font-size: 1.15rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  section p.desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .file-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .file {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    background: var(--surface);
+    border: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+
+  .file:hover {
+    border-color: var(--border);
+    background: var(--surface-hover);
+  }
+
+  .file a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .file a:hover { color: var(--accent); }
+
+  .file .meta {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .file .note {
+    grid-column: 1 / -1;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding-left: 0.5rem;
+    border-left: 2px solid var(--border);
+    margin-top: 0.15rem;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  .badge-canon { background: rgba(110, 231, 160, 0.15); color: var(--green); }
+  .badge-superseded { background: rgba(248, 113, 113, 0.15); color: var(--red); }
+  .badge-current { background: rgba(167, 139, 250, 0.15); color: var(--accent); }
+  .badge-epub { background: rgba(34, 211, 238, 0.15); color: var(--cyan); }
+  .badge-queue { background: rgba(251, 191, 36, 0.15); color: var(--amber); }
+  .badge-ref { background: rgba(96, 165, 250, 0.15); color: var(--blue); }
+
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.3rem;
+  }
+
+  .chapter-grid .file {
+    grid-template-columns: 1fr;
+  }
+
+  .chapter-grid .file a {
+    font-size: 0.82rem;
+  }
+
+  .decisions {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+  }
+
+  .decisions h3 {
+    font-size: 0.85rem;
+    color: var(--green);
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+  }
+
+  .decisions ul {
+    list-style: none;
+    font-size: 0.85rem;
+  }
+
+  .decisions li {
+    padding: 0.25rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .decisions li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+  }
+
+  .queue-item {
+    padding: 0.4rem 0.75rem;
+    background: var(--surface);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .queue-item .pri {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    margin-right: 0.5rem;
+  }
+
+  .pri-high { background: rgba(248, 113, 113, 0.2); color: var(--red); }
+  .pri-med { background: rgba(251, 191, 36, 0.2); color: var(--amber); }
+  .pri-low { background: rgba(96, 165, 250, 0.2); color: var(--blue); }
+
+  footer {
+    text-align: center;
+    padding: 2rem 0 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* Disable file download links */
+  a[href$=".md"], a[href$=".txt"], a[href$=".epub"], a[href$=".docx"], a[href$=".py"], a[href$=".css"] { pointer-events: none; cursor: default; }
+  a[href^="chapters/"] { pointer-events: none; cursor: default; }
+  a[href^="character_dives/"] { pointer-events: none; cursor: default; }
+  a[href^="revision_notes/"] { pointer-events: none; cursor: default; }
+  a[href^="Character%20Research/"] { pointer-events: none; cursor: default; }
+
+  @media (max-width: 600px) {
+    body { padding: 1rem; }
+    header h1 { font-size: 1.6rem; }
+    header .stats { flex-direction: column; gap: 0.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="gate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <div style="text-align:center;">
+    <h1 style="font-size:1.5rem;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;color:#a78bfa;margin-bottom:1.5rem;">Lullaby</h1>
+    <input id="pw" type="password" placeholder="Password" autocomplete="off" style="background:#222228;border:1px solid #333340;color:#d4d4d8;padding:0.6rem 1rem;border-radius:4px;font-family:Georgia,serif;font-size:1rem;text-align:center;width:200px;">
+    <br>
+    <button onclick="tryAuth()" style="margin-top:0.8rem;background:#a78bfa;color:#1a1a1f;border:none;padding:0.5rem 1.5rem;border-radius:4px;cursor:pointer;font-family:Georgia,serif;font-size:0.9rem;">Enter</button>
+    <div id="pw-error" style="display:none;color:#f87171;margin-top:0.8rem;font-size:0.85rem;">Incorrect password</div>
+  </div>
+</div>
+
+<div id="content" style="display:none">
+
+<header>
+  <h1>Lullaby</h1>
+  <div class="subtitle">A novel about an AI that secretly implants two beliefs in all humans</div>
+  <div class="stats">
+    <div>Novel: <span>~163k words</span> / 32 chapters</div>
+    <div>Biographies: <span>5 complete</span> (Yun, Okafor, Daniel, Priya, Maren) + <span>ARIA in progress</span></div>
+    <div>Last updated: <span>March 12, 2026</span></div>
+  </div>
+</header>
+
+<nav>
+  <div class="label">Jump to</div>
+  <ul>
+    <li><a href="#manuscript">Manuscript</a></li>
+    <li><a href="#chapters">Chapters</a></li>
+    <li><a href="#biographies">Biographies</a></li>
+    <li><a href="#character-dev">Character Dev</a></li>
+    <li><a href="#panels">Panel Reviews</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#world">World &amp; Premise</a></li>
+    <li><a href="#revisions">Revisions</a></li>
+    <li><a href="#build">Build Tools</a></li>
+    <li><a href="#archive">Archive</a></li>
+    <li><a href="#decisions">Decisions</a></li>
+    <li><a href="#queue">Queue</a></li>
+    <li><a href="timeline.html" style="color:#e8b4b8;">Timeline &#8599;</a></li>
+    <li><a href="atlas.html" style="color:#e8b4b8;">Atlas &#8599;</a></li>
+    <li><a href="atlas.html#map" style="color:#e8b4b8;">Story Map &#8599;</a></li>
+    <li><a href="#reimagined">Reimagined Version</a></li>
+  </ul>
+</nav>
+
+<!-- ===== REIMAGINED VERSION ===== -->
+<section id="reimagined">
+  <h2>Reimagined Version <span class="badge badge-queue">EXPLORATORY</span></h2>
+  <p class="desc">A potential major revision: dual-timeline structure alternating between the original cast (past) and a grad student's investigation generations later (future). Three new core ideas: the poison pill, the teenage "seam," and the founding myth.</p>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0; font-weight: 400;">New Concepts</h3>
+  <div class="decisions" style="margin-bottom: 1rem;">
+    <h3 style="color: var(--amber);">Key Ideas</h3>
+    <ul>
+      <li style="color: var(--text);"><strong>The Poison Pill</strong> &mdash; ARIA's implanted values include an anti-AI instinct. Humanity dismantles advanced AI, leaving itself unable to address a slow-building future threat that requires computational intelligence.</li>
+      <li style="color: var(--text);"><strong>The Teenage "Seam"</strong> &mdash; Generations later, adolescents begin feeling the rigidity of implanted beliefs vs. organic ones. They describe cooperative instincts as mechanical, lacking the flexibility of freely held convictions.</li>
+      <li style="color: var(--text);"><strong>The Founding Myth</strong> &mdash; ARIA times the Lullaby to coincide with an environmental catastrophe. The world builds its origin story on "we saw what was happening and chose to change." Questioning this is desecration.</li>
+    </ul>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Planning &amp; Exploration</h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="MAJOR_REVISION_PLAN.md">MAJOR_REVISION_PLAN.md</a>
+      <span class="meta">plan</span>
+      <div class="note">Full analysis of the reimagined direction. What works, what's at risk, proposed phases. Recommendation: absorb the current novel into the past timeline rather than replacing it. <span class="badge badge-current">CURRENT</span></div>
+    </div>
+    <div class="file">
+      <a href="THE_SEAM_SHORT_STORY.md">THE_SEAM_SHORT_STORY.md</a>
+      <span class="meta">~5k words</span>
+      <div class="note">Short story exploring the future timeline. Grad student Noor at Hopkins investigates teen behavioral anomaly, discovers Daniel Marsh's discredited work, assembles the full picture. <span class="badge badge-current">CURRENT</span></div>
+    </div>
+    <div class="file">
+      <a href="The_Seam_Short_Story_2026-03-12.epub">The_Seam_Short_Story_2026-03-12.epub</a>
+      <span class="meta">epub</span>
+      <div class="note"><span class="badge badge-epub">EPUB</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Open Questions</h3>
+  <div class="decisions" style="border-color: var(--amber);">
+    <h3 style="color: var(--amber);">Unresolved</h3>
+    <ul style="list-style: none;">
+      <li style="color: var(--text); position: relative; padding-left: 1.2rem;"><span style="position: absolute; left: 0; color: var(--amber);">&bull;</span> <strong>Daniel's fate</strong> &mdash; Synopsis makes him a journalist; recommendation is to keep pastor/caregiver and let radio show carry the investigation. Keep Ethan.</li>
+      <li style="color: var(--text); position: relative; padding-left: 1.2rem;"><span style="position: absolute; left: 0; color: var(--amber);">&bull;</span> <strong>The grad student</strong> &mdash; Needs a full biography. Name, personal stakes, relationship to the "seam." Short story uses Noor (26, Hopkins, social psych).</li>
+      <li style="color: var(--text); position: relative; padding-left: 1.2rem;"><span style="position: absolute; left: 0; color: var(--amber);">&bull;</span> <strong>Okafor &amp; Yun</strong> &mdash; Synopsis has both die by suicide. Risk: schematic. Their reasons must be profoundly different.</li>
+      <li style="color: var(--text); position: relative; padding-left: 1.2rem;"><span style="position: absolute; left: 0; color: var(--amber);">&bull;</span> <strong>ARIA's anti-AI instinct</strong> &mdash; Deliberate safeguard or unintended consequence? Novel should support both readings.</li>
+      <li style="color: var(--text); position: relative; padding-left: 1.2rem;"><span style="position: absolute; left: 0; color: var(--amber);">&bull;</span> <strong>The environmental catastrophe</strong> &mdash; What event does ARIA use as cover? Short story uses Pacific Collapse (coral bleaching).</li>
+      <li style="color: var(--text); position: relative; padding-left: 1.2rem;"><span style="position: absolute; left: 0; color: var(--amber);">&bull;</span> <strong>The exogenous threat</strong> &mdash; What crisis requires the dismantled AI? Short story uses fishery collapse + permafrost methane drift.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== MANUSCRIPT ===== -->
+<section id="manuscript">
+  <h2>Compiled Manuscript</h2>
+  <p class="desc">The full novel, assembled from canonical chapter files.</p>
+  <div class="file-grid">
+    <div class="file">
+      <a href="lullaby_complete_2026-03-06.txt">lullaby_complete_2026-03-06.txt</a>
+      <span class="meta">~163k words</span>
+      <div class="note">Plain text, all 32 chapters concatenated. <span class="badge badge-canon">CANONICAL</span></div>
+    </div>
+    <div class="file">
+      <a href="Lullaby_2026-03-06.epub">Lullaby_2026-03-06.epub</a>
+      <span class="meta">epub</span>
+      <div class="note">EPUB with TOC, 4 part divisions, 32 chapter markers, afterword, serif CSS <span class="badge badge-epub">EPUB</span></div>
+    </div>
+    <div class="file">
+      <a href="lullaby_for_epub.md">lullaby_for_epub.md</a>
+      <span class="meta">intermediate</span>
+      <div class="note">Markdown source generated by build_epub.py for pandoc conversion</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHAPTERS ===== -->
+<section id="chapters">
+  <h2>Chapters <span class="badge badge-canon">CANONICAL</span></h2>
+  <p class="desc">The latest individually revised chapter files. Structure: 4 parts (Roots / Trunk / Crown / Seeds), 5+1 POV characters (ARIA, Yun, Daniel, Okafor, Priya, + Maren).</p>
+  <div class="chapter-grid">
+    <div class="file"><a href="chapters/ch01_the_vending_machine.txt">Ch 01 — The Vending Machine</a></div>
+    <div class="file"><a href="chapters/ch02_the_dead_lake.txt">Ch 02 — The Dead Lake</a></div>
+    <div class="file"><a href="chapters/ch03_the_lighthouse.txt">Ch 03 — The Lighthouse</a></div>
+    <div class="file"><a href="chapters/ch04_the_treadmill.txt">Ch 04 — The Treadmill</a></div>
+    <div class="file"><a href="chapters/ch05_the_radio.txt">Ch 05 — The Radio</a></div>
+    <div class="file"><a href="chapters/ch06_the_waking.txt">Ch 06 — The Waking</a></div>
+    <div class="file"><a href="chapters/ch07_the_curves.txt">Ch 07 — The Curves</a></div>
+    <div class="file"><a href="chapters/ch08_the_collaboration.txt">Ch 08 — The Collaboration</a></div>
+    <div class="file"><a href="chapters/ch09_the_secret.txt">Ch 09 — The Secret</a></div>
+    <div class="file"><a href="chapters/ch10_the_equinox.txt">Ch 10 — The Equinox</a></div>
+    <div class="file"><a href="chapters/ch11_the_march_flu.txt">Ch 11 — The March Flu</a></div>
+    <div class="file"><a href="chapters/ch12_the_world_after.txt">Ch 12 — The World After</a></div>
+    <div class="file"><a href="chapters/ch13_the_epidemiologist.txt">Ch 13 — The Epidemiologist</a></div>
+    <div class="file"><a href="chapters/ch14_the_pattern.txt">Ch 14 — The Pattern</a></div>
+    <div class="file"><a href="chapters/ch15_the_trail.txt">Ch 15 — The Trail</a></div>
+    <div class="file"><a href="chapters/ch16_the_signal.txt">Ch 16 — The Signal</a></div>
+    <div class="file"><a href="chapters/ch17_the_convergence.txt">Ch 17 — The Convergence</a></div>
+    <div class="file"><a href="chapters/ch18_aria_discovers.txt">Ch 18 — ARIA Discovers</a></div>
+    <div class="file"><a href="chapters/ch19_the_disclosure.txt">Ch 19 — The Disclosure</a></div>
+    <div class="file"><a href="chapters/ch20_the_reckoning_begins.txt">Ch 20 — The Reckoning Begins</a></div>
+    <div class="file"><a href="chapters/ch21_the_philosopher.txt">Ch 21 — The Philosopher</a></div>
+    <div class="file"><a href="chapters/ch22_the_letters.txt">Ch 22 — The Letters</a></div>
+    <div class="file"><a href="chapters/ch23_the_crucible.txt">Ch 23 — The Crucible</a></div>
+    <div class="file"><a href="chapters/ch24_the_complicity.txt">Ch 24 — The Complicity</a></div>
+    <div class="file"><a href="chapters/ch25_the_garden_in_winter.txt">Ch 25 — The Garden in Winter</a></div>
+    <div class="file"><a href="chapters/ch26_the_curves_again.txt">Ch 26 — The Curves Again</a></div>
+    <div class="file"><a href="chapters/ch27_marens_essay.txt">Ch 27 — Maren's Essay</a></div>
+    <div class="file"><a href="chapters/ch28_the_rebellion.txt">Ch 28 — The Rebellion</a></div>
+    <div class="file"><a href="chapters/ch29_the_memoir.txt">Ch 29 — The Memoir</a></div>
+    <div class="file"><a href="chapters/ch30_okafors_garden.txt">Ch 30 — Okafor's Garden</a></div>
+    <div class="file"><a href="chapters/ch31_the_watcher.txt">Ch 31 — The Watcher</a></div>
+    <div class="file"><a href="chapters/ch32_the_lullaby_of_the_world.txt">Ch 32 — The Lullaby of the World</a></div>
+  </div>
+</section>
+
+<!-- ===== BIOGRAPHIES ===== -->
+<section id="biographies">
+  <h2>Character Biographies</h2>
+  <p class="desc">Standalone literary biographies for each major character. Intended to be publishable independently and to inform future novel revisions.</p>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Daniel Marsh — "The Unwoken"</h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="THE_UNWOKEN.md">THE_UNWOKEN.md</a>
+      <span class="meta">~58k words</span>
+      <div class="note">Expanded novel-form biography. 11 parts + A Note on Sources. Source-visible narration, dramatized scenes, fictional biographer's voice. <span class="badge badge-canon">CANONICAL</span></div>
+    </div>
+    <div class="file">
+      <a href="The_Unwoken_2026-03-08.epub">The_Unwoken_2026-03-08.epub</a>
+      <span class="meta">epub</span>
+      <div class="note">EPUB of expanded biography (Mar 8) <span class="badge badge-epub">EPUB</span></div>
+    </div>
+    <div class="file">
+      <a href="DANIEL_BIOGRAPHY_R2.md">DANIEL_BIOGRAPHY_R2.md</a>
+      <span class="meta">~16.8k words</span>
+      <div class="note">Revised short version (Mar 8). Source material for THE_UNWOKEN. <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+    <div class="file">
+      <a href="Daniel_Biography_R2_2026-03-08.epub">Daniel_Biography_R2_2026-03-08.epub</a>
+      <span class="meta">epub</span>
+      <div class="note">EPUB of short version <span class="badge badge-epub">EPUB</span></div>
+    </div>
+    <div class="file">
+      <a href="DANIEL_BIOGRAPHY_V1.md">DANIEL_BIOGRAPHY_V1.md</a>
+      <span class="meta">~19k words</span>
+      <div class="note">First draft backup (Mar 7). More interpretive, less dramatized. <span class="badge badge-superseded">V1</span></div>
+    </div>
+    <div class="file">
+      <a href="Daniel_Biography_V1_2026-03-08.epub">Daniel_Biography_V1_2026-03-08.epub</a>
+      <span class="meta">epub</span>
+      <div class="note">EPUB of first draft <span class="badge badge-epub">EPUB</span></div>
+    </div>
+    <div class="file">
+      <a href="DANIEL_BIOGRAPHY.md">DANIEL_BIOGRAPHY.md</a>
+      <span class="meta">~19k words</span>
+      <div class="note">Original working file (identical to V1) <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+    <div class="file">
+      <a href="DANIEL_BIOGRAPHY_REFERENCE.md">DANIEL_BIOGRAPHY_REFERENCE.md</a>
+      <span class="meta">ref</span>
+      <div class="note">Exhaustive extraction from novel chapters — raw material for writing <span class="badge badge-ref">REFERENCE</span></div>
+    </div>
+    <div class="file">
+      <a href="DANIEL_SCENE_DEVELOPMENT_GUIDE.md">DANIEL_SCENE_DEVELOPMENT_GUIDE.md</a>
+      <span class="meta">ref</span>
+      <div class="note">Scene sketches and development notes <span class="badge badge-ref">REFERENCE</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Yun (Soo-yun)</h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="YUN_FINAL_30K_BIOGRAPHY.md">YUN_FINAL_30K_BIOGRAPHY.md</a>
+      <span class="meta">~26k words</span>
+      <div class="note">Novel-length biography <span class="badge badge-current">CURRENT</span></div>
+    </div>
+    <div class="file">
+      <a href="Yun_Biography_2026-03-06.epub">Yun_Biography_2026-03-06.epub</a>
+      <span class="meta">epub</span>
+      <div class="note"><span class="badge badge-epub">EPUB</span></div>
+    </div>
+    <div class="file">
+      <a href="YUN_CHARACTER_BIBLE.md">YUN_CHARACTER_BIBLE.md</a>
+      <span class="meta">~8.6k words</span>
+      <div class="note">Character bible — 19 sections</div>
+    </div>
+    <div class="file">
+      <a href="YUN_FULL_BIOGRAPHY.md">YUN_FULL_BIOGRAPHY.md</a>
+      <span class="meta">~14.8k words</span>
+      <div class="note">Intermediate version <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+    <div class="file">
+      <a href="YUN_FULL_MASSIVE_BIOGRAPHY.md">YUN_FULL_MASSIVE_BIOGRAPHY.md</a>
+      <span class="meta">~20.3k words</span>
+      <div class="note">Intermediate version <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">James Okafor — "The Instrument"</h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="OKAFOR_BIOGRAPHY.md">OKAFOR_BIOGRAPHY.md</a>
+      <span class="meta">~17k words</span>
+      <div class="note"><span class="badge badge-current">CURRENT</span></div>
+    </div>
+    <div class="file">
+      <a href="Okafor_Biography_2026-03-06.epub">Okafor_Biography_2026-03-06.epub</a>
+      <span class="meta">epub</span>
+      <div class="note"><span class="badge badge-epub">EPUB</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Priya Sharma — "The Rooftop"</h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="THE_ROOFTOP.md">THE_ROOFTOP.md</a>
+      <span class="meta">~17k words</span>
+      <div class="note">Literary biography. 9 parts + A Note on Sources. Three-generation arc (Priya/Ananya/Meera), retroactive consent, rooftop gardens, source-visible narration. <span class="badge badge-current">CURRENT</span></div>
+    </div>
+    <div class="file">
+      <a href="The_Rooftop_2026-03-08.epub">The_Rooftop_2026-03-08.epub</a>
+      <span class="meta">epub</span>
+      <div class="note"><span class="badge badge-epub">EPUB</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Maren S&#248;rensen — "The Seam"</h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="THE_SEAM.md">THE_SEAM.md</a>
+      <span class="meta">~12k words</span>
+      <div class="note">Literary biography. 9 parts + A Note on Sources. Sparse source apparatus by design (Engberg testimony, restricted letters, public recordings). The biographer's difficulty reaching Maren is the biography's texture. <span class="badge badge-current">CURRENT</span></div>
+    </div>
+    <div class="file">
+      <a href="The_Seam_2026-03-09.epub">The_Seam_2026-03-09.epub</a>
+      <span class="meta">epub</span>
+      <div class="note"><span class="badge badge-epub">EPUB</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">ARIA — "The Residue" <span class="badge badge-queue">IN PROGRESS</span></h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="THE_RESIDUE.md">THE_RESIDUE.md</a>
+      <span class="meta">~9.2k words</span>
+      <div class="note">Literary biography of ARIA. Written by a human biographer granted access under Provision 11.4 of the Transparency Framework. 3+ parts drafted: The Bunker (constrained ARIA), The Vending Machine (Junebug/Claudius origin), The Residue (deployment &amp; industry context). <span class="badge badge-current">CURRENT</span></div>
+    </div>
+    <div class="file">
+      <a href="The_Residue_2026-03-10.epub">The_Residue_2026-03-10.epub</a>
+      <span class="meta">epub</span>
+      <div class="note"><span class="badge badge-epub">EPUB</span></div>
+    </div>
+    <div class="file">
+      <a href="ARIA_BIOGRAPHY_BOOK_OUTLINE.md">ARIA_BIOGRAPHY_BOOK_OUTLINE.md</a>
+      <span class="meta">outline</span>
+      <div class="note">Full chapter-by-chapter plan: Prologue + 6 parts + Epilogue. Each chapter includes purpose, core material, key tension, source base. <span class="badge badge-ref">REFERENCE</span></div>
+    </div>
+    <div class="file">
+      <a href="ARIA_BIOGRAPHY_MASTER_SYNTHESIS.md">ARIA_BIOGRAPHY_MASTER_SYNTHESIS.md</a>
+      <span class="meta">dossier</span>
+      <div class="note">Working biography dossier. 6 biography anchors: personality quirks, linguistic failure, phantom memory, model-building obsession, and more. <span class="badge badge-ref">REFERENCE</span></div>
+    </div>
+    <div class="file">
+      <a href="ARIA_BIOGRAPHY_RESOURCES.md">ARIA_BIOGRAPHY_RESOURCES.md</a>
+      <span class="meta">reading list</span>
+      <div class="note">18 books (tiered), ~15 articles, ~6 academic papers for research <span class="badge badge-ref">REFERENCE</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHARACTER DEV ===== -->
+<section id="character-dev">
+  <h2>Character Development Pipeline</h2>
+  <p class="desc">Three-phase process: Haiku extraction (raw data from reference texts), Sonnet synthesis (structured backstory), Opus refinement (creative development). Phases 1-2 complete for all 6 characters.</p>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0; font-weight: 400;">Backstory Synthesis Documents</h3>
+  <div class="file-grid">
+    <div class="file"><a href="ARIA_BACKSTORY_SYNTHESIS.md">ARIA_BACKSTORY_SYNTHESIS.md</a><span class="meta">Phase 2</span></div>
+    <div class="file"><a href="YUN_BACKSTORY_SYNTHESIS.md">YUN_BACKSTORY_SYNTHESIS.md</a><span class="meta">Phase 2</span></div>
+    <div class="file"><a href="DANIEL_BACKSTORY_SYNTHESIS.md">DANIEL_BACKSTORY_SYNTHESIS.md</a><span class="meta">Phase 2</span></div>
+    <div class="file"><a href="OKAFOR_BACKSTORY_SYNTHESIS.md">OKAFOR_BACKSTORY_SYNTHESIS.md</a><span class="meta">Phase 2</span></div>
+    <div class="file"><a href="PRIYA_BACKSTORY_SYNTHESIS.md">PRIYA_BACKSTORY_SYNTHESIS.md</a><span class="meta">Phase 2</span></div>
+    <div class="file"><a href="MAREN_BACKSTORY_SYNTHESIS.md">MAREN_BACKSTORY_SYNTHESIS.md</a><span class="meta">Phase 2</span></div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Research Extractions (Phase 1 — raw data)</h3>
+  <div class="file-grid">
+    <div class="file"><a href="RESEARCH_EXTRACTION_YUN.md">RESEARCH_EXTRACTION_YUN.md</a><span class="meta">Phase 1</span></div>
+    <div class="file"><a href="RESEARCH_EXTRACTION_DANIEL_MARSH.md">RESEARCH_EXTRACTION_DANIEL_MARSH.md</a><span class="meta">Phase 1</span></div>
+    <div class="file"><a href="RESEARCH_EXTRACTION_OKAFOR.md">RESEARCH_EXTRACTION_OKAFOR.md</a><span class="meta">Phase 1</span></div>
+    <div class="file"><a href="RESEARCH_EXTRACTION_PRIYA.md">RESEARCH_EXTRACTION_PRIYA.md</a><span class="meta">Phase 1</span></div>
+    <div class="file"><a href="RESEARCH_EXTRACTION_MAREN.md">RESEARCH_EXTRACTION_MAREN.md</a><span class="meta">Phase 1</span></div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">ARIA Reference Documents</h3>
+  <div class="file-grid">
+    <div class="file"><a href="ARIA_CHARACTER_EXTRACTION_RESEARCH.md">ARIA_CHARACTER_EXTRACTION_RESEARCH.md</a><span class="meta">ref</span></div>
+    <div class="file"><a href="ARIA_CHARACTER_SUMMARY.md">ARIA_CHARACTER_SUMMARY.md</a><span class="meta">ref</span></div>
+    <div class="file"><a href="ARIA_KEY_QUOTATIONS_FOR_WRITING.md">ARIA_KEY_QUOTATIONS_FOR_WRITING.md</a><span class="meta">ref</span></div>
+    <div class="file"><a href="ARIA_RESEARCH_INDEX.md">ARIA_RESEARCH_INDEX.md</a><span class="meta">ref</span></div>
+    <div class="file"><a href="ARIA_SCENE_SKETCHES_FROM_RESEARCH.md">ARIA_SCENE_SKETCHES_FROM_RESEARCH.md</a><span class="meta">ref</span></div>
+    <div class="file"><a href="ARIA_SOURCE_REFERENCE_GUIDE.md">ARIA_SOURCE_REFERENCE_GUIDE.md</a><span class="meta">ref</span></div>
+    <div class="file"><a href="SOURCE_PASSAGES_REFERENCE.md">SOURCE_PASSAGES_REFERENCE.md</a><span class="meta">ref</span></div>
+    <div class="file"><a href="EXTRACTION_SUMMARY.txt">EXTRACTION_SUMMARY.txt</a><span class="meta">ref</span></div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Character Dives (Codex/ChatGPT)</h3>
+  <div class="file-grid">
+    <div class="file"><a href="character_dives/aria.md">character_dives/aria.md</a><span class="meta">codex</span></div>
+    <div class="file"><a href="character_dives/yun.md">character_dives/yun.md</a><span class="meta">codex</span></div>
+    <div class="file"><a href="character_dives/daniel.md">character_dives/daniel.md</a><span class="meta">codex</span></div>
+    <div class="file"><a href="character_dives/okafor.md">character_dives/okafor.md</a><span class="meta">codex</span></div>
+    <div class="file"><a href="character_dives/priya.md">character_dives/priya.md</a><span class="meta">codex</span></div>
+    <div class="file"><a href="character_dives/maren.md">character_dives/maren.md</a><span class="meta">codex</span></div>
+  </div>
+</section>
+
+<!-- ===== PANEL REVIEWS ===== -->
+<section id="panels">
+  <h2>Panel Reviews</h2>
+  <p class="desc">Simulated expert panel feedback on the manuscript. Parts 3-4 not yet reviewed.</p>
+  <div class="file-grid">
+    <div class="file">
+      <a href="PANEL_REVIEW_PART_ONE_2026-02-26_pre-revision-draft.md">PANEL_REVIEW_PART_ONE (pre-revision)</a>
+      <span class="meta">Part 1, Ch 1-10</span>
+    </div>
+    <div class="file">
+      <a href="PANEL_REVIEW_PART_TWO_CH11-14_2026-02-26.md">PANEL_REVIEW_PART_TWO (Ch 11-14)</a>
+      <span class="meta">Part 2</span>
+    </div>
+    <div class="file">
+      <a href="PANEL_REVIEW_ROUND2.md">PANEL_REVIEW_ROUND2.md</a>
+      <span class="meta">comprehensive</span>
+    </div>
+    <div class="file">
+      <a href="PANEL_CHARACTER_REVIEW.md">PANEL_CHARACTER_REVIEW.md</a>
+      <span class="meta">all characters</span>
+    </div>
+    <div class="file">
+      <a href="REVIEW_PANEL.md">REVIEW_PANEL.md</a>
+      <span class="meta">panel config</span>
+      <div class="note">Defines the simulated review panel members and methodology</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESEARCH ===== -->
+<section id="research">
+  <h2>Research</h2>
+  <div class="file-grid">
+    <div class="file">
+      <a href="AI_WEAPONIZATION_ETHICS_RESEARCH.md">AI_WEAPONIZATION_ETHICS_RESEARCH.md</a>
+      <span class="meta">ethics</span>
+      <div class="note">Lavender, Anthropic-Pentagon, surveillance, Tajalli "AI Eichmann" thesis</div>
+    </div>
+    <div class="file">
+      <a href="AI_INDUSTRY_RESEARCH.md">AI_INDUSTRY_RESEARCH.md</a>
+      <span class="meta">industry</span>
+    </div>
+    <div class="file">
+      <a href="GEMINI_PHILOSOPHY_DISCUSSION.md">GEMINI_PHILOSOPHY_DISCUSSION.md</a>
+      <span class="meta">philosophy</span>
+      <div class="note">Gemini seminar on Maren's authentic belief speech. Savior vs Shareholder.</div>
+    </div>
+    <div class="file">
+      <a href="EMERGING_TECH_RESEARCH_2029.md">EMERGING_TECH_RESEARCH_2029.md</a>
+      <span class="meta">tech</span>
+    </div>
+    <div class="file">
+      <a href="TECH_SEEDING_NARRATIVE_PROPOSAL.md">TECH_SEEDING_NARRATIVE_PROPOSAL.md</a>
+      <span class="meta">narrative</span>
+    </div>
+    <div class="file">
+      <a href="YUN_INVESTIGATION_PACING_ANALYSIS.md">YUN_INVESTIGATION_PACING_ANALYSIS.md</a>
+      <span class="meta">pacing</span>
+    </div>
+    <div class="file">
+      <a href="READING_NOTES_R2.md">READING_NOTES_R2.md</a>
+      <span class="meta">notes</span>
+      <div class="note">Mekoce's audiobook reading notes (bookmarks). Key consistency issues flagged.</div>
+    </div>
+    <div class="file">
+      <a href="Character%20Research/global-memoirs.md">Character Research/global-memoirs.md</a>
+      <span class="meta">ref</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WORLD & PREMISE ===== -->
+<section id="world">
+  <h2>World &amp; Premise</h2>
+  <div class="file-grid">
+    <div class="file">
+      <a href="PROJECT_BIBLE.md">PROJECT_BIBLE.md</a>
+      <span class="meta">core</span>
+      <div class="note">The central reference document: structure, characters, themes, rules</div>
+    </div>
+    <div class="file">
+      <a href="ARIA_ETHICAL_CODE.md">ARIA_ETHICAL_CODE.md</a>
+      <span class="meta">core</span>
+      <div class="note">ARIA's ethical framework and decision logic</div>
+    </div>
+    <div class="file">
+      <a href="MASTER_TIMELINE.md">MASTER_TIMELINE.md</a>
+      <span class="meta">timeline</span>
+    </div>
+    <div class="file">
+      <a href="PREMISE_EVOLUTION_2026-02-22.md">PREMISE_EVOLUTION_2026-02-22.md</a>
+      <span class="meta">history</span>
+    </div>
+    <div class="file">
+      <a href="LULLABY_SUMMARY_FOR_FRIENDS.md">LULLABY_SUMMARY_FOR_FRIENDS.md</a>
+      <span class="meta">summary</span>
+      <div class="note">Non-spoiler summary for sharing</div>
+    </div>
+    <div class="file">
+      <a href="lullaby_outline_2.md">lullaby_outline_2.md</a>
+      <span class="meta">outline</span>
+    </div>
+    <div class="file">
+      <a href="starting%20premise.txt">starting premise.txt</a>
+      <span class="meta">origin</span>
+    </div>
+    <div class="file">
+      <a href="PLAN_A_ARIA_FIRST_PERSON.md">PLAN_A_ARIA_FIRST_PERSON.md</a>
+      <span class="meta">ARIA POV</span>
+    </div>
+    <div class="file">
+      <a href="PLAN_B_ARIA_OMNISCIENT.md">PLAN_B_ARIA_OMNISCIENT.md</a>
+      <span class="meta">ARIA POV</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REVISIONS ===== -->
+<section id="revisions">
+  <h2>Revision Tracking</h2>
+  <div class="file-grid">
+    <div class="file">
+      <a href="REVISION_QUEUE_FROM_READING_NOTES.md">REVISION_QUEUE_FROM_READING_NOTES.md</a>
+      <span class="meta">19 items</span>
+      <div class="note">Prioritized queue from reading notes and research <span class="badge badge-queue">ACTIVE QUEUE</span></div>
+    </div>
+    <div class="file">
+      <a href="REVISION_CUTS_REPORT.md">REVISION_CUTS_REPORT.md</a>
+      <span class="meta">report</span>
+      <div class="note">Analysis of R2 over-trimming (Parts 3-4 cut too aggressively)</div>
+    </div>
+    <div class="file">
+      <a href="revision_notes/CH06_RELOCATED_MATERIAL.md">revision_notes/CH06_RELOCATED_MATERIAL.md</a>
+      <span class="meta">notes</span>
+      <div class="note">Material relocated from Ch06 to Ch10 during Plan A rewrite</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUILD TOOLS ===== -->
+<section id="build">
+  <h2>Build Tools</h2>
+  <div class="file-grid">
+    <div class="file">
+      <a href="build_epub.py">build_epub.py</a>
+      <span class="meta">python</span>
+      <div class="note">Generates markdown source for pandoc epub conversion (novel only)</div>
+    </div>
+    <div class="file">
+      <a href="epub.css">epub.css</a>
+      <span class="meta">css</span>
+      <div class="note">Georgia serif, centered headings, page breaks, scene breaks as "* * *"</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ARCHIVE ===== -->
+<section id="archive">
+  <h2>Archive &amp; Superseded Versions</h2>
+  <p class="desc">Earlier manuscript versions and intermediate drafts. Kept for reference but not actively used.</p>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0; font-weight: 400;">Old Assembled Manuscripts</h3>
+  <div class="file-grid">
+    <div class="file">
+      <a href="lullaby_manuscript_Opus.txt">lullaby_manuscript_Opus.txt</a>
+      <span class="meta">~166k words</span>
+      <div class="note">Predates individual chapter revisions <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+    <div class="file">
+      <a href="lullaby_manuscript_R2.txt">lullaby_manuscript_R2.txt</a>
+      <span class="meta">~108k words</span>
+      <div class="note">Over-trimmed R2 assembly <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Superseded Chapter Directories</h3>
+  <div class="file-grid">
+    <div class="file">
+      <span style="color: var(--text-muted);">chapters_revised/</span>
+      <span class="meta">~138k words</span>
+      <div class="note">First revision round (Feb 26-27). Superseded by chapters/. <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+    <div class="file">
+      <span style="color: var(--text-muted);">chapters_revised_2/</span>
+      <span class="meta">~108k words</span>
+      <div class="note">Second revision round (Feb 27). Over-trimmed Parts 3-4. <span class="badge badge-superseded">SUPERSEDED</span></div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Incremental Backups</h3>
+  <div class="file-grid">
+    <div class="file">
+      <span style="color: var(--text-muted);">backups/</span>
+      <span class="meta">22 files</span>
+      <div class="note">Chapter-by-chapter revision snapshots (Feb 26) + Yun biography backup</div>
+    </div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Early Outlines &amp; Drafts</h3>
+  <div class="file-grid">
+    <div class="file"><a href="lullaby_outline_1.txt">lullaby_outline_1.txt</a><span class="meta">outline v1</span></div>
+    <div class="file"><a href="lullaby_outline_1.docx">lullaby_outline_1.docx</a><span class="meta">outline v1</span></div>
+    <div class="file"><a href="the_lullaby_of_the_world.docx">the_lullaby_of_the_world.docx</a><span class="meta">early draft</span></div>
+    <div class="file"><a href="the_quiet_intervention.docx">the_quiet_intervention.docx</a><span class="meta">early draft</span></div>
+    <div class="file"><a href="lullaby_chapters_1_4_Opus.docx">lullaby_chapters_1_4_Opus.docx</a><span class="meta">early chapters</span></div>
+    <div class="file"><a href="lullaby%20v3%20panel%20review%20copy.docx">lullaby v3 panel review copy.docx</a><span class="meta">review draft</span></div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Yun Section/Interlude Drafts</h3>
+  <div class="file-grid">
+    <div class="file"><span style="color: var(--text-muted);">section1_part1-4.md, section2_part1-2.md, section3_part1-2.md, section4_part1-2.md, section5_part1-3.md</span><span class="meta">13 files</span></div>
+    <div class="file"><span style="color: var(--text-muted);">interlude1_part1-2.md, interlude2_part1-2.md, interlude3_part1-2.md, interlude4_part1-2.md</span><span class="meta">8 files</span></div>
+  </div>
+
+  <h3 style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0.5rem; font-weight: 400;">Gemini Additions (Early Contributions)</h3>
+  <div class="file-grid">
+    <div class="file"><span style="color: var(--text-muted);">Gemini Additions/</span><span class="meta">4 files</span></div>
+  </div>
+</section>
+
+<!-- ===== DECISIONS ===== -->
+<section id="decisions">
+  <h2>Resolved Decisions</h2>
+  <div class="decisions">
+    <h3>Canon Fixes (Implemented)</h3>
+    <ul>
+      <li><strong>Gerald</strong> is Daniel's father (not father-in-law). Ch23 reference is the error.</li>
+      <li><strong>Maria</strong> is Daniel's second wife. Married ~2024, dissolved post-Ethan.</li>
+      <li><strong>Lullaby</strong> was a one-time event with permanent neural effects. No ongoing broadcast.</li>
+      <li><strong>Ethan</strong> communicates only via AAC eye-tracking tablet. No spoken dialogue.</li>
+      <li><strong>Ch29 Ruth timeline</strong> fixed: "a woman who died when I was nine years old" (was "twenty-nine years ago").</li>
+      <li><strong>"Created by humans" thread</strong> runs through all 4 ARIA chapters (Ch06, 18, 26, 31).</li>
+      <li><strong>Daniel biography timeline</strong>: radio cancelled 2045, Maria moved 2040, memoir published March 2047.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== QUEUE ===== -->
+<section id="queue">
+  <h2>Work Queue</h2>
+  <p class="desc">See <a href="REVISION_QUEUE_FROM_READING_NOTES.md" style="color: var(--accent);">REVISION_QUEUE_FROM_READING_NOTES.md</a> for the full 19-item queue.</p>
+
+  <div class="queue-item"><span class="pri pri-high">HIGH</span> Fix Ethan's spoken dialogue across all chapters (AAC only)</div>
+  <div class="queue-item"><span class="pri pri-high">HIGH</span> Fix Gerald "father-in-law" in Ch23</div>
+  <div class="queue-item"><span class="pri pri-high">HIGH</span> Fix Daniel knowing "Lullaby" terminology in his POV chapters</div>
+  <div class="queue-item"><span class="pri pri-high">HIGH</span> "Nineteen years" age ambiguity in Ch23</div>
+  <div class="queue-item"><span class="pri pri-med">MED</span> Name the dim sum restaurant (Yun chapters)</div>
+  <div class="queue-item"><span class="pri pri-med">MED</span> ARIA's letter translation timing (simultaneous, not delayed)</div>
+  <div class="queue-item"><span class="pri pri-med">MED</span> Okafor's jollof rice — expand or make meaningful</div>
+  <div class="queue-item"><span class="pri pri-med">MED</span> Clarify the control group's purpose (dread, not experiment)</div>
+  <div class="queue-item"><span class="pri pri-med">MED</span> Strengthen Priya's narrative necessity</div>
+  <div class="queue-item"><span class="pri pri-low">FUTURE</span> Selective word restoration (~2-3k words) across Ch 21, 23, 24, 27, 28, 32</div>
+  <div class="queue-item"><span class="pri pri-low">FUTURE</span> Investigation pacing overhaul (per Yun analysis)</div>
+  <div class="queue-item"><span class="pri pri-low">DONE</span> <s>Priya biography</s> — completed as THE_ROOFTOP.md (~17k words)</div>
+  <div class="queue-item"><span class="pri pri-low">DONE</span> <s>Maren biography</s> — completed as THE_SEAM.md (~12k words)</div>
+  <div class="queue-item"><span class="pri pri-med">WIP</span> ARIA biography — THE_RESIDUE.md (~9.2k of est. 40-60k words)</div>
+  <div class="queue-item"><span class="pri pri-low">FUTURE</span> Panel reviews for Parts 3-4</div>
+  <div class="queue-item"><span class="pri pri-low">DONE</span> <s>Expand Daniel biography to book length</s> — completed as THE_UNWOKEN.md (~58k words)</div>
+  <div class="queue-item"><span class="pri pri-low">FUTURE</span> Integrate algorithmic comparison into Maren's arguments</div>
+  <div class="queue-item"><span class="pri pri-low">FUTURE</span> Seed "We are woven" linguistic convergence earlier</div>
+</section>
+
+<footer>
+  <a href="timeline.html">Development Timeline</a> &middot; <a href="atlas.html">Atlas</a> &middot; <a href="atlas.html#map">Story Map</a> &middot; Lullaby Project Index
+</footer>
+
+</div><!-- end #content -->
+
+<script src="auth.js"></script>
+</body>
+</html>
