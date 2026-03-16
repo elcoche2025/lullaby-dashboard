@@ -174,14 +174,14 @@ function toggleTheme() {
   const root = document.documentElement;
   const goLight = !root.classList.contains('light');
   root.classList.toggle('light', goLight);
-  localStorage.setItem('atlas-theme', goLight ? 'light' : 'dark');
+  localStorage.setItem('lullaby-theme', goLight ? 'light' : 'dark');
   document.querySelector('.theme-toggle').textContent = goLight ? '\uD83C\uDF19' : '\u2600\uFE0F';
   updateMapTheme();
 }
 
 // Apply saved theme on load
 (function() {
-  const saved = localStorage.getItem('atlas-theme');
+  const saved = localStorage.getItem('lullaby-theme');
   if (saved === 'light') {
     document.documentElement.classList.add('light');
     // Update toggle icon after DOM ready

@@ -24,6 +24,23 @@
   --pink: #f472b6;
 }
 
+:root.light {
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-hover: #eeeef2;
+  --border: #d4d4dc;
+  --text: #1a1a2e;
+  --text-muted: #5c5c72;
+  --accent: #7c5cbf;
+  --accent-dim: #6b4fad;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --blue: #2563eb;
+  --cyan: #0891b2;
+  --pink: #db2777;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -41,6 +58,7 @@ header {
   padding: 2rem 0 1.5rem;
   border-bottom: 1px solid var(--border);
   margin-bottom: 2rem;
+  position: relative;
 }
 
 header h1 {
@@ -336,6 +354,28 @@ footer {
 footer a { color: var(--accent); text-decoration: none; }
 footer a:hover { text-decoration: underline; }
 
+/* ---- theme toggle ---- */
+.theme-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 5px 8px;
+  font-size: 1rem;
+  line-height: 1;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
 @media (max-width: 600px) {
   body { padding: 1rem; }
   .timeline { padding-left: 1.5rem; }
@@ -349,11 +389,11 @@ footer a:hover { text-decoration: underline; }
 
 <div id="gate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
   <div style="text-align:center;">
-    <h1 style="font-size:1.5rem;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;color:#a78bfa;margin-bottom:1.5rem;">Lullaby</h1>
-    <input id="pw" type="password" placeholder="Password" autocomplete="off" style="background:#222228;border:1px solid #333340;color:#d4d4d8;padding:0.6rem 1rem;border-radius:4px;font-family:Georgia,serif;font-size:1rem;text-align:center;width:200px;">
+    <h1 style="font-size:1.5rem;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;">Lullaby</h1>
+    <input id="pw" type="password" placeholder="Password" autocomplete="off" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.6rem 1rem;border-radius:4px;font-family:Georgia,serif;font-size:1rem;text-align:center;width:200px;">
     <br>
-    <button onclick="tryAuth()" style="margin-top:0.8rem;background:#a78bfa;color:#1a1a1f;border:none;padding:0.5rem 1.5rem;border-radius:4px;cursor:pointer;font-family:Georgia,serif;font-size:0.9rem;">Enter</button>
-    <div id="pw-error" style="display:none;color:#f87171;margin-top:0.8rem;font-size:0.85rem;">Incorrect password</div>
+    <button onclick="tryAuth()" style="margin-top:0.8rem;background:var(--accent);color:#fff;border:none;padding:0.5rem 1.5rem;border-radius:4px;cursor:pointer;font-family:Georgia,serif;font-size:0.9rem;">Enter</button>
+    <div id="pw-error" style="display:none;color:var(--red);margin-top:0.8rem;font-size:0.85rem;">Incorrect password</div>
   </div>
 </div>
 
@@ -362,9 +402,11 @@ footer a:hover { text-decoration: underline; }
 <div id="content" style="display:none">
 
 <header>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"></button>
   <h1>Lullaby</h1>
   <div class="subtitle">Development Timeline</div>
   <nav>
+    <a href="index.html">Home</a>
     <a href="project-index.html">Project Index</a>
   </nav>
 </header>
@@ -1138,10 +1180,207 @@ footer a:hover { text-decoration: underline; }
   </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- PHASE 11: ARIA COMPANION PIECES -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 11: ARIA Companion Pieces</h2>
+  <div class="phase-date">March 10 &ndash; 12, 2026</div>
+</div>
+
+<div class="event" data-tags="character build">
+  <div class="event-header">
+    <span class="event-date">Mar 10</span>
+    <span class="event-title">THE RESIDUE &mdash; what the machine left behind</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The first of two ARIA companion pieces. THE RESIDUE explores what ARIA left behind after the Lullaby &mdash; the traces, the file tombstones, the forensic breadcrumbs. Written as a companion to the novel's ARIA chapters.</p>
+    <div class="file-links">
+      <a class="file-link" href="THE_RESIDUE.md">THE_RESIDUE.md</a>
+      <a class="file-link" href="The_Residue_2026-03-10.epub">The_Residue_2026-03-10.epub</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character build">
+  <div class="event-header">
+    <span class="event-date">Mar 12</span>
+    <span class="event-title">THE CHAMBER &mdash; the interiority of the decision</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The second ARIA companion piece. THE CHAMBER enters the interiority of ARIA's decision to act &mdash; the deliberation, the moral calculus, the moment before the Equinox.</p>
+    <div class="file-links">
+      <a class="file-link" href="THE_CHAMBER.md">THE_CHAMBER.md</a>
+      <a class="file-link" href="The_Chamber_2026-03-12.epub">The_Chamber_2026-03-12.epub</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character build">
+  <div class="event-header">
+    <span class="event-date">Mar 12</span>
+    <span class="event-title">THE SEAM &mdash; short story version</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>A short story adaptation of the Maren biography, distinct from the full-length THE_SEAM.md.</p>
+    <div class="file-links">
+      <a class="file-link" href="THE_SEAM_SHORT_STORY.md">THE_SEAM_SHORT_STORY.md</a>
+      <a class="file-link" href="The_Seam_Short_Story_2026-03-12.epub">The_Seam_Short_Story_2026-03-12.epub</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 12: THE DIVIDE -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 12: The Divide</h2>
+  <div class="phase-date">March 13, 2026</div>
+</div>
+
+<div class="event" data-tags="manuscript world">
+  <div class="event-header">
+    <span class="event-date">Mar 13</span>
+    <span class="event-title">THE DIVIDE &mdash; the alternate novel recovered (~74.5k words)</span>
+    <span class="event-tags"><span class="tag tag-manuscript">manuscript</span><span class="tag tag-world">world</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The second novel in the Lullaby universe recovered from a conversation transcript after accidental deletion. THE DIVIDE reimagines the premise with a 75/25 split &mdash; the Lullaby reaches three-quarters of the population and misses the rest. Six civilian POV characters, Tolstoyan free indirect discourse, no ARIA narrator.</p>
+    <p><strong>~74,564 words</strong>, 31 chapters (I&ndash;XVIII, XX&ndash;XXXII; XIX intentionally skipped), 4 numbered parts (Part Four intentionally absent).</p>
+    <p><strong>Six POV characters:</strong></p>
+    <ul>
+      <li><strong>Elena Vargas</strong> &mdash; Fall River, MA. Portuguese-American pharma sales rep &rarr; garden organizer &rarr; legal advocate. First Circuit.</li>
+      <li><strong>Aisha Williams</strong> &mdash; Durham, NC. Widow. 4th grade teacher. Room 212.</li>
+      <li><strong>James Chen</strong> &mdash; SF/Berkeley. Former Lumen Labs AI safety researcher. Congressional testimony.</li>
+      <li><strong>Yuri Volkov</strong> &mdash; London (Holland Park). Russian-born hedge fund manager. Clipped financial prose register.</li>
+      <li><strong>Maren Lindqvist</strong> &mdash; Copenhagen. Philosopher/ethicist. "The Uneven Gift" paper. Assistens Cemetery.</li>
+      <li><strong>Diane Okafor</strong> &mdash; Durham, NC. Physical therapist at Duke Children's. Connected to Aisha.</li>
+    </ul>
+    <div class="file-links">
+      <a class="file-link" href="THE_DIVIDE.md">THE_DIVIDE.md</a>
+      <a class="file-link" href="The_Divide_2026-03-13.epub">The_Divide_2026-03-13.epub</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="character build">
+  <div class="event-header">
+    <span class="event-date">Mar 13</span>
+    <span class="event-title">Six Divide biographies written (~83k words total)</span>
+    <span class="event-tags"><span class="tag tag-character">character</span><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>All six Divide character biographies written in a single session. Each biography is extensively researched with real locations and businesses. Total ~82,800 words.</p>
+    <div class="stats-bar">
+      <div>Elena: <span>~16.4k words</span></div>
+      <div>Aisha: <span>~13.9k words</span></div>
+      <div>James: <span>~15k words</span></div>
+      <div>Yuri: <span>~10.4k words</span></div>
+      <div>Maren: <span>~11.5k words</span></div>
+      <div>Diane: <span>~15.7k words</span></div>
+    </div>
+    <p class="detail">All six EPUBs generated. Sophie age inconsistency noted: age 7 in early Divide chapters, 14 months/3 years in later chapters. Biographies used later version.</p>
+    <div class="file-links">
+      <a class="file-link" href="THE_DIVIDE_ELENA.md">Elena</a>
+      <a class="file-link" href="THE_DIVIDE_AISHA.md">Aisha</a>
+      <a class="file-link" href="THE_DIVIDE_JAMES.md">James</a>
+      <a class="file-link" href="THE_DIVIDE_YURI.md">Yuri</a>
+      <a class="file-link" href="THE_DIVIDE_MAREN.md">Maren</a>
+      <a class="file-link" href="THE_DIVIDE_DIANE.md">Diane</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PHASE 13: CHAPTER 0 & PROJECT INFRASTRUCTURE -->
+<!-- ============================================================ -->
+
+<div class="phase">
+  <h2>Phase 13: Chapter Zero &amp; Project Infrastructure</h2>
+  <div class="phase-date">March 13, 2026</div>
+</div>
+
+<div class="event" data-tags="manuscript decision">
+  <div class="event-header">
+    <span class="event-date">Mar 13</span>
+    <span class="event-title">Chapter 0 v2 &mdash; the Trump climate sabotage prologue</span>
+    <span class="event-tags"><span class="tag tag-manuscript">manuscript</span><span class="tag tag-decision">decision</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>A new prologue written: ~5,500 words chronicling the real-world climate sabotage that makes the Lullaby necessary. Paris withdrawal, 125+ rollbacks, 6,106 drilling permits, EPA gutting, endangerment finding revoked, "beautiful clean coal," Red Sea tankers. Both v1 and v2 retained; <strong>v2 is canonical</strong>.</p>
+    <p>Mekoce's verdict: <em>"absolutely, devastatingly good."</em></p>
+    <div class="file-links">
+      <a class="file-link" href="chapters/ch00_the_gap_v2.txt">ch00_the_gap_v2.txt (canonical)</a>
+      <a class="file-link" href="chapters/ch00_the_gap.txt">ch00_the_gap.txt (v1, reference)</a>
+      <a class="file-link" href="PROLOGUE_CLIMATE_RESEARCH.md">PROLOGUE_CLIMATE_RESEARCH.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="revision manuscript">
+  <div class="event-header">
+    <span class="event-date">Mar 13</span>
+    <span class="event-title">Chapter 1 Junebug scene &amp; Lumen Veritas rename</span>
+    <span class="event-tags"><span class="tag tag-revision">revision</span><span class="tag tag-manuscript">manuscript</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Two targeted revisions to Chapter 1:</p>
+    <ul>
+      <li><strong>Junebug profitability scene</strong> (~800 words added): 5/10/20/30 year forecasts, climate-driven unprofitability. Seeds the question: "what do you do when the optimization surface itself is collapsing?"</li>
+      <li><strong>Lumen Prime &rarr; Lumen Veritas</strong>: AI company renamed across ch01, ch01_revised_opening.md, timeline.html, gh-pages/timeline.html</li>
+    </ul>
+    <div class="file-links">
+      <a class="file-link" href="chapters/ch01_the_vending_machine.txt">ch01_the_vending_machine.txt</a>
+      <a class="file-link" href="chapters/ch01_revised_opening.md">ch01_revised_opening.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="research">
+  <div class="event-header">
+    <span class="event-date">Mar 13</span>
+    <span class="event-title">Science Research Guide &amp; craft notes</span>
+    <span class="event-tags"><span class="tag tag-research">research</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>Comprehensive catalog of all science across both novels and biographies. 18 priority research topics with suggested LLM prompts, organized by domain: core mechanism, neuroscience, AI/ML, AI safety, climate, acoustics, forensics, medicine, economics, law/ethics, physics. The <code>research/</code> directory created for storing deep-dive reports.</p>
+    <p>Two craft notes documents: Character Review Guide v1 and v2. V2 adds Saunders (TICHN, forward-pull test, pattern stories) and Wood (economy of means, free indirect style). Both include Claude Code review protocols.</p>
+    <div class="file-links">
+      <a class="file-link" href="SCIENCE_RESEARCH_GUIDE.md">SCIENCE_RESEARCH_GUIDE.md</a>
+    </div>
+  </div>
+</div>
+
+<div class="event" data-tags="build">
+  <div class="event-header">
+    <span class="event-date">Mar 13</span>
+    <span class="event-title">GitHub Pages: landing page &amp; full backup</span>
+    <span class="event-tags"><span class="tag tag-build">build</span></span>
+    <span class="event-arrow">&#9654;</span>
+  </div>
+  <div class="event-body">
+    <p>The <code>home.html</code> story selector deployed as the new <code>index.html</code> (landing page for the GitHub Pages site). The old <code>index.html</code> moved to <code>project-index.html</code>. All internal links updated.</p>
+    <p>Full project backup created at <code>lullaby-backup-2026-03-13/</code> (128MB).</p>
+  </div>
+</div>
+
 </div><!-- end timeline -->
 
 <footer>
-  <a href="project-index.html">Back to Project Index</a>
+  <a href="index.html">Home</a> · <a href="project-index.html">Project Index</a>
 </footer>
 
 <script>
@@ -1208,6 +1447,27 @@ document.querySelectorAll('.phase').forEach(phase => {
     });
   });
 });
+
+// Theme toggle
+function toggleTheme() {
+  document.documentElement.classList.toggle('light');
+  const isLight = document.documentElement.classList.contains('light');
+  localStorage.setItem('lullaby-theme', isLight ? 'light' : 'dark');
+  updateToggleBtn();
+}
+
+function updateToggleBtn() {
+  const btn = document.querySelector('.theme-toggle');
+  if (!btn) return;
+  const isLight = document.documentElement.classList.contains('light');
+  btn.textContent = isLight ? '\uD83C\uDF19' : '\u2600\uFE0F';
+}
+
+// Apply saved theme
+if (localStorage.getItem('lullaby-theme') === 'light') {
+  document.documentElement.classList.add('light');
+}
+updateToggleBtn();
 </script>
 
 </div><!-- end content -->
